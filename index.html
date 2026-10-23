@@ -1,26 +1,814 @@
-<!doctype html>
-<html lang="ar" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>حلواني الأصيل بسوهاج</title>
-    <meta name="description" content="الموقع الرسمي لحلواني الأصيل بمحافظة سوهاج - منيو الحلويات الشرقية بالسمن البلدي الفلاحي الصافي، والتورتات والجيلاتو، خدمة الدليفري والخط الساخن 16432، الطلب المباشر عبر واتساب وفروع سوهاج الخمسة." />
-    <meta property="og:title" content="حلواني الأصيل بسوهاج" />
-    <meta property="og:description" content="الموقع الرسمي لحلواني الأصيل بمحافظة سوهاج - منيو الحلويات الشرقية بالسمن البلدي الفلاحي الصافي، والتورتات والجيلاتو، خدمة الدليفري والخط الساخن 16432، الطلب المباشر عبر واتساب وفروع سوهاج الخمسة." />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- Website Favicon & Browser Tab Logo -->
-    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
-    <link rel="alternate icon" type="image/svg+xml" href="./favicon.svg" />
-    <link rel="apple-touch-icon" href="./favicon.svg" />
-    <meta name="theme-color" content="#dfb743" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  </head>
-  <body class="bg-white dark:bg-[#0a0a0a] text-neutral-900 dark:text-white font-sans antialiased selection:bg-[#dfb743] selection:text-black">
-    <div id="root"></div>
-    <script type="module" src="./src/main.tsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark scroll-smooth">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>حلواني الأصيل بسوهاج | Al-Aseel Confectionery</title>
+  <meta name="description"
+    content="الموقع الرسمي لحلواني الأصيل بمحافظة سوهاج - أشهى الحلويات الشرقية بالسمن البلدي الفلاحي الصافي، وتورتات المناسبات، والجيلاتو الإيطالي، وفروع سوهاج والخط الساخن 16432." />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="حلواني الأصيل بسوهاج | Al-Aseel Confectionery" />
+  <meta property="og:description" content="عراقة الصنعة بالسمن البلدي الفلاحي الصافي منذ 2004 في سوهاج." />
+  <meta property="og:image" content="./images/hero_oriental_pastry_atelier_1790628925750.jpg" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg" />
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <!-- Tailwind CSS CDN (مثل CODX) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            gold: {
+              DEFAULT: '#D4AF37',
+              light: '#fae084',
+              dark: '#b3822a',
+              hover: '#C5A059'
+            },
+            cream: '#F3E5AB'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom CSS & Security Styles -->
+  <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body class="bg-[#0d0d0d] text-[#F3E5AB] antialiased selection:bg-[#D4AF37] selection:text-black">
+
+  <!-- 1. Realtime Scroll Progress Bar -->
+  <div id="scroll-progress"
+    class="fixed top-0 left-0 right-0 h-[2.5px] bg-gradient-to-r from-[#D4AF37] via-[#fae084] to-[#b3822a] z-50 origin-right transition-all duration-75 pointer-events-none w-0">
+  </div>
+
+  <!-- 2. Sticky Header Navbar -->
+  <header id="main-header"
+    class="sticky top-0 z-40 bg-[#0d0d0d]/95 backdrop-blur-md border-b border-[#D4AF37]/30 transition-all duration-300 py-3">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
+
+      <!-- Logo & Brand -->
+      <a href="#hero" class="flex items-center gap-3 group text-right shrink-0">
+        <div
+          class="w-10 h-10 rounded-xl bg-[#141414] border border-[#D4AF37]/60 flex items-center justify-center shadow-[0_0_12px_rgba(212,175,55,0.3)] group-hover:scale-105 transition-all">
+          <i class="fas fa-crown text-[#D4AF37] text-base"></i>
+        </div>
+        <div class="flex flex-col leading-none">
+          <span class="text-lg sm:text-xl font-black font-calligraphy-arabic tracking-tight text-[#D4AF37]">
+            حلواني الأصيل
+          </span>
+          <span class="text-[10px] text-[#F3E5AB]/70 font-medium">
+            سوهاج · عراقة الصنعة منذ 2004
+          </span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation Menu -->
+      <nav class="hidden lg:flex items-center gap-6 text-sm font-bold text-[#F3E5AB]/80">
+        <a href="#hero" class="hover:text-[#D4AF37] transition-colors py-1">الرئيسية</a>
+        <a href="#showcase" class="hover:text-[#D4AF37] transition-colors py-1">شرائح العرض</a>
+        <a href="#menu" class="hover:text-[#D4AF37] transition-colors py-1">المنيو والأسعار</a>
+        <a href="#custom-order" class="hover:text-[#D4AF37] transition-colors py-1">طلبية خاصة</a>
+        <a href="#branches" class="hover:text-[#D4AF37] transition-colors py-1">فروع سوهاج والخرائط</a>
+        <a href="#testimonials" class="hover:text-[#D4AF37] transition-colors py-1">آراء العملاء</a>
+        <a href="#contact" class="hover:text-[#D4AF37] transition-colors py-1">التواصل والدليفري</a>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2.5">
+        <!-- Dark/Light Mode Toggle -->
+        <button class="theme-toggle-btn p-2 rounded-xl bg-[#1A1A1A] hover:bg-[#252525] text-[#D4AF37] border border-[#D4AF37]/30 transition-all" title="تبديل الوضع">
+          <i class="fas fa-sun dark:hidden text-amber-400"></i>
+          <i class="fas fa-moon hidden dark:inline text-[#D4AF37]"></i>
+        </button>
+
+        <!-- Hotline Button -->
+        <a href="tel:16432"
+          class="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#D4AF37] hover:bg-[#C5A059] text-black font-black text-xs transition-all shadow-md">
+          <i class="fas fa-phone-alt"></i>
+          <span>16432</span>
+        </a>
+
+        <!-- WhatsApp Button -->
+        <a href="https://wa.me/201225254447" target="_blank"
+          class="hidden md:flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white font-bold text-xs transition-all shadow-md">
+          <i class="fab fa-whatsapp text-sm"></i>
+          <span>واتساب</span>
+        </a>
+
+        <!-- Mobile Menu Toggle Button -->
+        <button id="mobile-menu-btn"
+          class="lg:hidden p-2 rounded-xl bg-[#1A1A1A] text-[#D4AF37] border border-[#D4AF37]/30 hover:bg-[#252525]">
+          <i class="fas fa-bars text-lg"></i>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-nav-drawer"
+      class="hidden lg:hidden border-t border-[#D4AF37]/20 bg-[#121212] px-6 py-4 space-y-3 mt-3">
+      <a href="#hero" class="mobile-nav-link block text-sm font-bold hover:text-[#D4AF37]">الرئيسية</a>
+      <a href="#showcase" class="mobile-nav-link block text-sm font-bold hover:text-[#D4AF37]">شرائح العرض</a>
+      <a href="#menu" class="mobile-nav-link block text-sm font-bold hover:text-[#D4AF37]">المنيو والأسعار</a>
+      <a href="#custom-order" class="mobile-nav-link block text-sm font-bold hover:text-[#D4AF37]">طلبية خاصة</a>
+      <a href="#branches" class="mobile-nav-link block text-sm font-bold hover:text-[#D4AF37]">فروع سوهاج والخرائط</a>
+      <a href="#testimonials" class="mobile-nav-link block text-sm font-bold hover:text-[#D4AF37]">آراء العملاء</a>
+      <a href="#contact" class="mobile-nav-link block text-sm font-bold hover:text-[#D4AF37]">التواصل والدليفري</a>
+      <div class="flex items-center gap-2 pt-2 border-t border-[#D4AF37]/20">
+        <a href="tel:16432" class="flex-1 py-2 text-center rounded-xl bg-[#D4AF37] text-black font-black text-xs">
+          الخط الساخن: 16432
+        </a>
+        <a href="https://wa.me/201225254447" target="_blank" class="flex-1 py-2 text-center rounded-xl bg-[#25D366] text-white font-bold text-xs">
+          واتساب الطلبات
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- 3. Hero Section -->
+    <section id="hero" class="relative pt-10 pb-16 sm:pt-16 sm:pb-24 border-b border-[#D4AF37]/20 overflow-hidden">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        
+        <!-- Text & Action Column -->
+        <div class="lg:col-span-7 space-y-6 text-right">
+          <div class="flex items-center gap-2 text-xs sm:text-sm font-bold text-[#D4AF37]">
+            <span>⚜️</span>
+            <span>حلواني الأصيل · محافظة سوهاج</span>
+            <span class="text-neutral-600">·</span>
+            <span>سمن بلدي فلاحي خالص 100%</span>
+          </div>
+
+          <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black font-calligraphy-arabic text-[#F3E5AB] leading-tight">
+            أطايب الشرق والغرب <br />
+            <span class="text-[#D4AF37]">بمذاق الأصالة في قلب سوهاج</span>
+          </h1>
+
+          <p class="text-sm sm:text-base text-[#F3E5AB]/75 font-serif-arabic leading-relaxed max-w-2xl font-light">
+            مرحباً بكم في الموقع الرسمي لحلواني الأصيل. تصفحوا قائمة الحلويات الشرقية بالسمن البلدي الفلاحي، تورتات الأفراح والمناسبات الفاخرة، الجيلاتو الإيطالي، والمخبوزات الطازجة يومياً، مع إمكانية تصميم طلبية خاصة لمناسبتكم السعيدة والطلب الفوري.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-3 pt-2">
+            <a href="#menu"
+              class="px-6 py-3.5 rounded-2xl bg-[#D4AF37] hover:bg-[#C5A059] text-black font-black text-sm shadow-[0_4px_16px_rgba(212,175,55,0.4)] transition-all flex items-center gap-2">
+              <i class="fas fa-utensils"></i>
+              <span>تصفح المنيو والأسعار</span>
+            </a>
+
+            <a href="#custom-order"
+              class="px-6 py-3.5 rounded-2xl bg-[#1A1A1A] hover:bg-[#252525] text-[#D4AF37] border border-[#D4AF37]/40 font-black text-sm transition-all flex items-center gap-2">
+              <i class="fas fa-birthday-cake text-[#D4AF37]"></i>
+              <span>عمل طلبية خاصة 🎂</span>
+            </a>
+
+            <a href="tel:16432"
+              class="px-5 py-3.5 rounded-2xl bg-[#141414] hover:bg-[#1f1f1f] text-[#F3E5AB] border border-[#D4AF37]/30 text-sm font-bold transition-all flex items-center gap-2">
+              <i class="fas fa-phone-alt text-[#D4AF37]"></i>
+              <span>16432</span>
+            </a>
+          </div>
+
+          <!-- Trust Badges -->
+          <div class="grid grid-cols-3 gap-3 pt-4 border-t border-[#D4AF37]/20 max-w-lg">
+            <div class="p-3 rounded-2xl bg-[#141414] border border-[#D4AF37]/20 text-center">
+              <div class="text-lg font-black text-[#D4AF37]">5 فروع</div>
+              <div class="text-[11px] text-[#F3E5AB]/70">تغطي سوهاج وأخميم</div>
+            </div>
+            <div class="p-3 rounded-2xl bg-[#141414] border border-[#D4AF37]/20 text-center">
+              <div class="text-lg font-black text-[#D4AF37]">100%</div>
+              <div class="text-[11px] text-[#F3E5AB]/70">سمن بلدي فلاحي</div>
+            </div>
+            <div class="p-3 rounded-2xl bg-[#141414] border border-[#D4AF37]/20 text-center">
+              <div class="text-lg font-black text-[#D4AF37]">2004</div>
+              <div class="text-[11px] text-[#F3E5AB]/70">عراقة مستمرة</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual Hero Media -->
+        <div class="lg:col-span-5 relative">
+          <div class="relative rounded-3xl overflow-hidden border-2 border-[#D4AF37]/50 shadow-[0_12px_40px_rgba(212,175,55,0.25)] group">
+            <img src="./images/hero_oriental_pastry_atelier_1790628925750.jpg"
+              alt="حلواني الأصيل بسوهاج"
+              class="w-full h-[400px] object-cover group-hover:scale-105 transition-transform duration-700" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+            <div class="absolute bottom-5 right-5 left-5 text-right">
+              <span class="px-3 py-1 rounded-full bg-[#D4AF37] text-black text-xs font-black mb-2 inline-block">
+                تراث وجودة سوهاجية
+              </span>
+              <h3 class="text-lg font-bold text-white font-calligraphy-arabic">
+                حلويات مشكلة بالسمن البلدي الفلاحي الصافي
+              </h3>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 4. Showcase 3-Slides Highlights -->
+    <section id="showcase" class="py-16 bg-[#111111] border-b border-[#D4AF37]/20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center space-y-2 mb-10">
+          <span class="text-xs font-bold text-[#D4AF37] uppercase tracking-wider">⚜️ تشكيلات مختارة بعناية</span>
+          <h2 class="text-2xl sm:text-4xl font-black font-calligraphy-arabic text-[#F3E5AB]">
+            شرائح العرض الملكية الحصرية
+          </h2>
+          <p class="text-xs sm:text-sm text-[#F3E5AB]/70 max-w-xl mx-auto">
+            أبرز إبداعات حلواني الأصيل اليومية التي تصنع خصيصاً لأفراح ومناسبات أهالي سوهاج
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <!-- Slide 1 -->
+          <div class="rounded-3xl overflow-hidden bg-[#161616] border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all flex flex-col group shadow-lg">
+            <div class="relative h-56 overflow-hidden">
+              <img src="./images/delicacy_basbousa_baladi_1790628937968.jpg" alt="بسبوسة الأصيل الملكية" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+              <span class="absolute top-3 right-3 px-3 py-1 rounded-full bg-black/80 text-[#D4AF37] text-xs font-bold border border-[#D4AF37]/40">
+                ⚜️ سمن بلدي فلاحي 100%
+              </span>
+            </div>
+            <div class="p-6 flex-1 flex flex-col justify-between text-right space-y-4">
+              <div>
+                <span class="text-xs text-[#D4AF37] font-bold">حلويات شرقية ملوكية</span>
+                <h3 class="text-lg font-black text-[#F3E5AB] mt-1 font-serif-arabic">بسبوسة وكنافة الأصيل الملكية بالبندق</h3>
+                <p class="text-xs text-[#F3E5AB]/70 mt-2 leading-relaxed">
+                  سميد قمح فاخر معجون بسمن بلدي بقري وجاموسي خالص 100% ومحلى بشيرة عسل خفيفة مع بندق ولوز محمص.
+                </p>
+              </div>
+              <div class="pt-4 border-t border-[#D4AF37]/15 flex items-center justify-between">
+                <span class="text-sm font-black text-[#D4AF37]">تبدأ من 195 ج.م</span>
+                <a href="#menu" class="px-4 py-2 rounded-xl bg-[#D4AF37] hover:bg-[#C5A059] text-black font-black text-xs transition-all">
+                  اطلب الآن
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 2 -->
+          <div class="rounded-3xl overflow-hidden bg-[#161616] border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all flex flex-col group shadow-lg">
+            <div class="relative h-56 overflow-hidden">
+              <img src="./images/luxury_wedding_cake_1790628949855.jpg" alt="تورتات الأفراح والمناسبات" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+              <span class="absolute top-3 right-3 px-3 py-1 rounded-full bg-black/80 text-[#D4AF37] text-xs font-bold border border-[#D4AF37]/40">
+                🎂 أفراح ومناسبات سوهاج
+              </span>
+            </div>
+            <div class="p-6 flex-1 flex flex-col justify-between text-right space-y-4">
+              <div>
+                <span class="text-xs text-[#D4AF37] font-bold">تورتات المناسبات والأفراح</span>
+                <h3 class="text-lg font-black text-[#F3E5AB] mt-1 font-serif-arabic">استوديو تورتات الزفاف الفاخرة متعددة الطوابق</h3>
+                <p class="text-xs text-[#F3E5AB]/70 mt-2 leading-relaxed">
+                  إسبونج فانيلا وشوكولاتة بلجيكية غنية بحشوات اللوتس والفستق والتوت الطبيعي، تصاميم ملكية خاصة.
+                </p>
+              </div>
+              <div class="pt-4 border-t border-[#D4AF37]/15 flex items-center justify-between">
+                <span class="text-sm font-black text-[#D4AF37]">تبدأ من 420 ج.م</span>
+                <a href="#custom-order" class="px-4 py-2 rounded-xl bg-[#D4AF37] hover:bg-[#C5A059] text-black font-black text-xs transition-all">
+                  صمم تورتتك
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Slide 3 -->
+          <div class="rounded-3xl overflow-hidden bg-[#161616] border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all flex flex-col group shadow-lg">
+            <div class="relative h-56 overflow-hidden">
+              <img src="./images/lotus_kunafa_dish_1790803207868.jpg" alt="صواني الضيافة" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+              <span class="absolute top-3 right-3 px-3 py-1 rounded-full bg-black/80 text-[#D4AF37] text-xs font-bold border border-[#D4AF37]/40">
+                ✨ ضيافة العزومات والمؤتمرات
+              </span>
+            </div>
+            <div class="p-6 flex-1 flex flex-col justify-between text-right space-y-4">
+              <div>
+                <span class="text-xs text-[#D4AF37] font-bold">صواني وبوكسات الضيافة</span>
+                <h3 class="text-lg font-black text-[#F3E5AB] mt-1 font-serif-arabic">صواني الضيافة الفاخرة وبوكسات الهدايا</h3>
+                <p class="text-xs text-[#F3E5AB]/70 mt-2 leading-relaxed">
+                  تشكيلات راقية جاهزة للتقديم المباشر في مناسباتكم العائلية ورجال الأعمال في قاعات ومنازل سوهاج.
+                </p>
+              </div>
+              <div class="pt-4 border-t border-[#D4AF37]/15 flex items-center justify-between">
+                <span class="text-sm font-black text-[#D4AF37]">تبدأ من 490 ج.م</span>
+                <a href="https://wa.me/201225254447" target="_blank" class="px-4 py-2 rounded-xl bg-[#D4AF37] hover:bg-[#C5A059] text-black font-black text-xs transition-all">
+                  احجز صينية
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 5. Full Menu & Product Catalog -->
+    <section id="menu" class="py-16 border-b border-[#D4AF37]/20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center space-y-2 mb-10">
+          <span class="text-xs font-bold text-[#D4AF37]">⚜️ قائمة الأصناف والأسعار</span>
+          <h2 class="text-2xl sm:text-4xl font-black font-calligraphy-arabic text-[#F3E5AB]">
+            منيو حلواني الأصيل الشامل
+          </h2>
+          <p class="text-xs sm:text-sm text-[#F3E5AB]/70 max-w-xl mx-auto">
+            تصفح القائمة الكاملة للحلويات الشرقية، التورتات والجيلاتو، المخبوزات وحلويات المواسم
+          </p>
+        </div>
+
+        <!-- Filter Buttons & Search -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
+          
+          <!-- Category Filters -->
+          <div class="flex flex-wrap items-center gap-2">
+            <button data-cat-btn="all" class="px-4 py-2 rounded-xl text-xs font-black bg-[#D4AF37] text-black border border-[#D4AF37] transition-all">
+              الكل (16)
+            </button>
+            <button data-cat-btn="eastern" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#141414] text-[#F3E5AB]/80 border border-[#D4AF37]/25 hover:border-[#D4AF37] transition-all">
+              شرقي بالسمن البلدي
+            </button>
+            <button data-cat-btn="western" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#141414] text-[#F3E5AB]/80 border border-[#D4AF37]/25 hover:border-[#D4AF37] transition-all">
+              تورتات وجيلاتو
+            </button>
+            <button data-cat-btn="bakery" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#141414] text-[#F3E5AB]/80 border border-[#D4AF37]/25 hover:border-[#D4AF37] transition-all">
+              Bakery الأصيل
+            </button>
+            <button data-cat-btn="seasons" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#141414] text-[#F3E5AB]/80 border border-[#D4AF37]/25 hover:border-[#D4AF37] transition-all">
+              مواسم ومناسبات
+            </button>
+          </div>
+
+          <!-- Search Input -->
+          <div class="relative w-full sm:w-72">
+            <input type="text" id="search-input" placeholder="ابحث عن كنافة، بسبوسة، تورتة..."
+              class="w-full pl-4 pr-10 py-2.5 rounded-xl bg-[#141414] border border-[#D4AF37]/30 text-xs text-[#F3E5AB] placeholder-[#F3E5AB]/40 focus:outline-none focus:border-[#D4AF37] transition-colors" />
+            <i class="fas fa-search absolute right-3.5 top-3.5 text-[#D4AF37] text-xs"></i>
+          </div>
+
+        </div>
+
+        <!-- Dynamic Products Grid -->
+        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Will be rendered dynamically via script.js -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 6. Custom Order Section -->
+    <section id="custom-order" class="py-16 bg-[#111111] border-b border-[#D4AF37]/20">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center space-y-2 mb-10">
+          <span class="text-xs font-bold text-[#D4AF37]">🎂 استوديو التورتات والمناسبات</span>
+          <h2 class="text-2xl sm:text-4xl font-black font-calligraphy-arabic text-[#F3E5AB]">
+            صمم طلبيتك الخاصة لمناسبتك السعيدة
+          </h2>
+          <p class="text-xs sm:text-sm text-[#F3E5AB]/70">
+            اختر مواصفات تورتة زفافك أو صينية الضيافة واحصل على التكلفة التقديرية الفورية للتواصل مع الشيف
+          </p>
+        </div>
+
+        <!-- Custom Order Card -->
+        <div class="bg-[#161616] rounded-3xl p-6 sm:p-8 border-2 border-[#D4AF37]/30 shadow-2xl text-right space-y-6">
+          
+          <!-- Order Type Selector -->
+          <div class="flex items-center gap-3">
+            <button data-order-type="cake" class="flex-1 py-3 rounded-2xl font-black text-sm bg-[#D4AF37] text-black border border-[#D4AF37] transition-all flex items-center justify-center gap-2">
+              <i class="fas fa-birthday-cake"></i>
+              <span>تورتة مناسبات وزفاف</span>
+            </button>
+            <button data-order-type="sweets_tray" class="flex-1 py-3 rounded-2xl font-bold text-sm bg-[#141414] text-[#F3E5AB]/80 border border-[#D4AF37]/25 hover:border-[#D4AF37] transition-all flex items-center justify-center gap-2">
+              <i class="fas fa-concierge-bell"></i>
+              <span>صينية ضيافة مشكلة</span>
+            </button>
+          </div>
+
+          <form id="custom-order-form" onsubmit="event.preventDefault(); CustomOrderManager.submitCustomOrder();" class="space-y-6">
+            
+            <!-- Cake Options Panel -->
+            <div id="cake-options-panel" class="space-y-4">
+              <div>
+                <label class="block text-xs font-bold text-[#D4AF37] mb-2">1. مقاس التورتة وعدد الأفراد:</label>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <label class="cursor-pointer p-3 rounded-xl bg-[#1f1f1f] border border-[#D4AF37]/30 hover:border-[#D4AF37] flex flex-col text-center">
+                    <input type="radio" name="cake-size" data-price="420" checked class="hidden peer">
+                    <span class="text-xs font-black text-[#F3E5AB] peer-checked:text-[#D4AF37]">وسط (20 سم)</span>
+                    <span class="text-[10px] text-neutral-400">8 - 12 فرد · 420 ج.م</span>
+                  </label>
+                  <label class="cursor-pointer p-3 rounded-xl bg-[#1f1f1f] border border-[#D4AF37]/30 hover:border-[#D4AF37] flex flex-col text-center">
+                    <input type="radio" name="cake-size" data-price="650" class="hidden peer">
+                    <span class="text-xs font-black text-[#F3E5AB] peer-checked:text-[#D4AF37]">كبير (26 سم)</span>
+                    <span class="text-[10px] text-neutral-400">18 - 25 فرد · 650 ج.م</span>
+                  </label>
+                  <label class="cursor-pointer p-3 rounded-xl bg-[#1f1f1f] border border-[#D4AF37]/30 hover:border-[#D4AF37] flex flex-col text-center">
+                    <input type="radio" name="cake-size" data-price="1200" class="hidden peer">
+                    <span class="text-xs font-black text-[#F3E5AB] peer-checked:text-[#D4AF37]">طابقين (2 Tiers)</span>
+                    <span class="text-[10px] text-neutral-400">35 - 50 فرد · 1200 ج.م</span>
+                  </label>
+                  <label class="cursor-pointer p-3 rounded-xl bg-[#1f1f1f] border border-[#D4AF37]/30 hover:border-[#D4AF37] flex flex-col text-center">
+                    <input type="radio" name="cake-size" data-price="2200" class="hidden peer">
+                    <span class="text-xs font-black text-[#F3E5AB] peer-checked:text-[#D4AF37]">زفاف 3 طوابق</span>
+                    <span class="text-[10px] text-neutral-400">70 - 100 فرد · 2200 ج.م</span>
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-[#D4AF37] mb-2">2. نكهة الإسبونج كيك:</label>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  <label class="cursor-pointer p-2.5 rounded-xl bg-[#1f1f1f] border border-[#D4AF37]/30 text-center">
+                    <input type="radio" name="cake-flavor" data-price="0" checked class="hidden peer">
+                    <span class="text-xs font-bold peer-checked:text-[#D4AF37]">فانيلا كلاسيك (+0)</span>
+                  </label>
+                  <label class="cursor-pointer p-2.5 rounded-xl bg-[#1f1f1f] border border-[#D4AF37]/30 text-center">
+                    <input type="radio" name="cake-flavor" data-price="40" class="hidden peer">
+                    <span class="text-xs font-bold peer-checked:text-[#D4AF37]">فادج بلجيكي (+40)</span>
+                  </label>
+                  <label class="cursor-pointer p-2.5 rounded-xl bg-[#1f1f1f] border border-[#D4AF37]/30 text-center">
+                    <input type="radio" name="cake-flavor" data-price="50" class="hidden peer">
+                    <span class="text-xs font-bold peer-checked:text-[#D4AF37]">ريد فيلفت (+50)</span>
+                  </label>
+                  <label class="cursor-pointer p-2.5 rounded-xl bg-[#1f1f1f] border border-[#D4AF37]/30 text-center">
+                    <input type="radio" name="cake-flavor" data-price="30" class="hidden peer">
+                    <span class="text-xs font-bold peer-checked:text-[#D4AF37]">نصف ونصف (+30)</span>
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-[#D4AF37] mb-2">3. الحشوات والإضافات المميزة:</label>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  <label class="p-2 rounded-xl bg-[#1f1f1f] border border-[#D4AF37]/20 flex items-center gap-2 cursor-pointer text-xs">
+                    <input type="checkbox" name="cake-filling" data-price="50" checked class="accent-[#D4AF37]">
+                    <span>نوتيلا وكرسبي (+50)</span>
+                  </label>
+                  <label class="p-2 rounded-xl bg-[#1f1f1f] border border-[#D4AF37]/20 flex items-center gap-2 cursor-pointer text-xs">
+                    <input type="checkbox" name="cake-filling" data-price="60" class="accent-[#D4AF37]">
+                    <span>لوتس كرانشي (+60)</span>
+                  </label>
+                  <label class="p-2 rounded-xl bg-[#1f1f1f] border border-[#D4AF37]/20 flex items-center gap-2 cursor-pointer text-xs">
+                    <input type="checkbox" name="cake-filling" data-price="90" class="accent-[#D4AF37]">
+                    <span>فستق حلبي وصوص (+90)</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sweets Tray Options Panel -->
+            <div id="tray-options-panel" class="hidden space-y-4">
+              <label class="block text-xs font-bold text-[#D4AF37] mb-2">اختر تشكيلة صينية الضيافة الفاخرة:</label>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <label class="p-3.5 rounded-xl bg-[#1f1f1f] border border-[#D4AF37]/30 cursor-pointer block">
+                  <input type="radio" name="tray-type" data-price="580" checked class="hidden peer">
+                  <span class="text-sm font-black text-[#F3E5AB] peer-checked:text-[#D4AF37] block">صينية الأصيل الملكية المشكلة</span>
+                  <span class="text-xs text-neutral-400 block mt-1">بسبوسة بندق، كنافة أساور، بقلاوة، بلح الشام (2.5 كجم) · 580 ج.م</span>
+                </label>
+                <label class="p-3.5 rounded-xl bg-[#1f1f1f] border border-[#D4AF37]/30 cursor-pointer block">
+                  <input type="radio" name="tray-type" data-price="490" class="hidden peer">
+                  <span class="text-sm font-black text-[#F3E5AB] peer-checked:text-[#D4AF37] block">بوكس هدايا فاخر مفرغ سيلفر</span>
+                  <span class="text-xs text-neutral-400 block mt-1">تشكيلة غربية وشرقية مكسرات وسمن بلدي (2 كجم) · 490 ج.م</span>
+                </label>
+                <label class="p-3.5 rounded-xl bg-[#1f1f1f] border border-[#D4AF37]/30 cursor-pointer block">
+                  <input type="radio" name="tray-type" data-price="650" class="hidden peer">
+                  <span class="text-sm font-black text-[#F3E5AB] peer-checked:text-[#D4AF37] block">صينية كنافة نابلسية ساخنة</span>
+                  <span class="text-xs text-neutral-400 block mt-1">تُخبز وتُسلم ساخنة بالسمن والجبنة (3 كجم) · 650 ج.م</span>
+                </label>
+                <label class="p-3.5 rounded-xl bg-[#1f1f1f] border border-[#D4AF37]/30 cursor-pointer block">
+                  <input type="radio" name="tray-type" data-price="1150" class="hidden peer">
+                  <span class="text-sm font-black text-[#F3E5AB] peer-checked:text-[#D4AF37] block">بوفيه صواني العزومات الكبرى</span>
+                  <span class="text-xs text-neutral-400 block mt-1">صواني مشكلة تلبي قاعات الأفراح والعزومات (5 كجم) · 1150 ج.م</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Occasion, Date & Branch -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+              <div>
+                <label class="block text-xs font-bold text-[#D4AF37] mb-1">المناسبة:</label>
+                <select name="order-occasion" class="w-full p-2.5 rounded-xl bg-[#1f1f1f] border border-[#D4AF37]/30 text-xs text-[#F3E5AB] focus:outline-none">
+                  <option value="عرس وزفاف ملكي">💍 عرس وزفاف ملكي</option>
+                  <option value="حفل خطوبة">💐 حفل خطوبة</option>
+                  <option value="عيد ميلاد">🎂 عيد ميلاد</option>
+                  <option value="تخرج ونجاح">🎓 تخرج ونجاح</option>
+                  <option value="عزومة وضيافة عائلية">✨ عزومة وضيافة عائلية</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-[#D4AF37] mb-1">تاريخ ووقت الاستلام:</label>
+                <input type="date" id="order-date" class="w-full p-2.5 rounded-xl bg-[#1f1f1f] border border-[#D4AF37]/30 text-xs text-[#F3E5AB] focus:outline-none">
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-[#D4AF37] mb-1">فرع الاستلام أو التوصيل:</label>
+                <select name="order-branch" class="w-full p-2.5 rounded-xl bg-[#1f1f1f] border border-[#D4AF37]/30 text-xs text-[#F3E5AB] focus:outline-none">
+                  <option value="فرع شارع مازن (النادي البحري)">فرع شارع مازن (النادي البحري)</option>
+                  <option value="فرع الشبان (ميدان الشبان)">فرع الشبان (ميدان الشبان)</option>
+                  <option value="فرع شارع التحرير (الزهراء)">فرع شارع التحرير (الزهراء)</option>
+                  <option value="فرع أخميم (أمام رنين)">فرع أخميم (أمام رنين)</option>
+                  <option value="فرع طريق أسيوط الصحراوي">فرع طريق أسيوط الصحراوي</option>
+                  <option value="دليفري وتوصيل للمنزل أو القاعة">دليفري وتوصيل للمنزل أو القاعة</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Notes -->
+            <div>
+              <label class="block text-xs font-bold text-[#D4AF37] mb-1">ملاحظات أو أسماء مكتوبة على التورتة:</label>
+              <textarea id="order-notes" rows="2" placeholder="اكتب الاسم أو العبارة المراد كتابتها بالشوكولاتة أو أي طلب خاص..." class="w-full p-2.5 rounded-xl bg-[#1f1f1f] border border-[#D4AF37]/30 text-xs text-[#F3E5AB] focus:outline-none"></textarea>
+            </div>
+
+            <!-- Total Price & Submit Button -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-[#D4AF37]/20">
+              <div class="text-right">
+                <span class="text-xs text-[#F3E5AB]/70 block">التكلفة التقديرية المبدئية:</span>
+                <span id="custom-order-price" class="text-2xl font-black text-[#D4AF37]">470 ج.م</span>
+              </div>
+              <button type="submit" class="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-[#D4AF37] hover:bg-[#C5A059] text-black font-black text-sm transition-all shadow-lg flex items-center justify-center gap-2">
+                <i class="fab fa-whatsapp text-lg"></i>
+                <span>إرسال وتفصيل الطلبية عبر واتساب</span>
+              </button>
+            </div>
+
+          </form>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 7. Branches & Interactive Map Section -->
+    <section id="branches" class="py-16 border-b border-[#D4AF37]/20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center space-y-2 mb-10">
+          <span class="text-xs font-bold text-[#D4AF37]">📍 فروعنا في خدمتكم دائماً</span>
+          <h2 class="text-2xl sm:text-4xl font-black font-calligraphy-arabic text-[#F3E5AB]">
+            فروع حلواني الأصيل بمحافظة سوهاج
+          </h2>
+          <p class="text-xs sm:text-sm text-[#F3E5AB]/70 max-w-xl mx-auto">
+            خمسة فروع مجهزة بالكامل لتلبية احتياجات أهالي سوهاج وأخميم والطريق الصحراوي
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          <!-- Interactive Map -->
+          <div class="lg:col-span-7 rounded-3xl overflow-hidden border-2 border-[#D4AF37]/40 shadow-xl bg-[#141414] h-[450px] relative">
+            <div id="leaflet-map" class="w-full h-full z-10"></div>
+          </div>
+
+          <!-- Branches List -->
+          <div class="lg:col-span-5 space-y-3 max-h-[450px] overflow-y-auto pr-1">
+            <div id="branches-list" class="space-y-3">
+              <!-- Rendered via script.js -->
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 8. Testimonials Section -->
+    <section id="testimonials" class="py-16 bg-[#111111] border-b border-[#D4AF37]/20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center space-y-2 mb-10">
+          <span class="text-xs font-bold text-[#D4AF37]">⭐ ثقة ومحبة أهل سوهاج</span>
+          <h2 class="text-2xl sm:text-4xl font-black font-calligraphy-arabic text-[#F3E5AB]">
+            آراء وتجارب عملائنا الكرام
+          </h2>
+          <p class="text-xs sm:text-sm text-[#F3E5AB]/70">
+            أكثر من 20 عاماً من الثقة المتبادلة والشهادات الصادقة
+          </p>
+        </div>
+
+        <!-- Reviews Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+          
+          <div class="p-5 rounded-2xl bg-[#161616] border border-[#D4AF37]/20 text-right space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-amber-400 text-xs">⭐⭐⭐⭐⭐</span>
+              <span class="text-[10px] text-neutral-500">أخميم</span>
+            </div>
+            <p class="text-xs text-[#F3E5AB]/80 leading-relaxed font-light">
+              "طلبنا صواني البسبوسة والكنافة الملكية لعرس ابني. المعازيم كلهم أثنوا على طعم السمن البلدي الصافي وريحة الشيرة. كرم حقيقي وشرفتمونا!"
+            </p>
+            <div class="pt-2 border-t border-[#D4AF37]/15">
+              <h4 class="text-xs font-bold text-[#D4AF37]">الحاج عاطف الهواري</h4>
+              <span class="text-[10px] text-neutral-400">عرس قاعة النيل</span>
+            </div>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-[#161616] border border-[#D4AF37]/20 text-right space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-amber-400 text-xs">⭐⭐⭐⭐⭐</span>
+              <span class="text-[10px] text-neutral-500">الجمهورية</span>
+            </div>
+            <p class="text-xs text-[#F3E5AB]/80 leading-relaxed font-light">
+              "تورتة الشوكولاتة والريد فيلفيت كانت تحفة فنية في حفل التخرج. الكيكة هشة وسكرها متوازن بدقة فائقة. أصبحت وجهتنا الدائمة."
+            </p>
+            <div class="pt-2 border-t border-[#D4AF37]/15">
+              <h4 class="text-xs font-bold text-[#D4AF37]">د. مروة عبدالرحمن</h4>
+              <span class="text-[10px] text-neutral-400">أستاذة بجامعة سوهاج</span>
+            </div>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-[#161616] border border-[#D4AF37]/20 text-right space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-amber-400 text-xs">⭐⭐⭐⭐⭐</span>
+              <span class="text-[10px] text-neutral-500">الكوثر</span>
+            </div>
+            <p class="text-xs text-[#F3E5AB]/80 leading-relaxed font-light">
+              "أنا زبون وفي لحلواني الأصيل من أكثر من 12 سنة. البيتي فور والسابليه بالسمن البلدي عندهم مفيش زيه في الصعيد كلها، يذوب في الفم."
+            </p>
+            <div class="pt-2 border-t border-[#D4AF37]/15">
+              <h4 class="text-xs font-bold text-[#D4AF37]">المستشار سامح القاضي</h4>
+              <span class="text-[10px] text-neutral-400">مستشار قانوني</span>
+            </div>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-[#161616] border border-[#D4AF37]/20 text-right space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-amber-400 text-xs">⭐⭐⭐⭐⭐</span>
+              <span class="text-[10px] text-neutral-500">طريق أسيوط</span>
+            </div>
+            <p class="text-xs text-[#F3E5AB]/80 leading-relaxed font-light">
+              "خدمة التوصيل السريع عبر الواتساب ممتازة جداً ومريحة. طلبت كنافة نابلسية سخنة وصلت في أقل من 25 دقيقة بحافظة حرارية والقرمشة روعة."
+            </p>
+            <div class="pt-2 border-t border-[#D4AF37]/15">
+              <h4 class="text-xs font-bold text-[#D4AF37]">م. حسام الشريف</h4>
+              <span class="text-[10px] text-neutral-400">مدير مشروعات</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Add Review via WhatsApp -->
+        <div class="bg-[#161616] rounded-3xl p-6 sm:p-8 border border-[#D4AF37]/30 max-w-2xl mx-auto text-right">
+          <h3 class="text-base font-black text-[#D4AF37] mb-2 font-serif-arabic">
+            شاركنا رأيك وتجربتك مع حلويات الأصيل:
+          </h3>
+          <form onsubmit="TestimonialsManager.submitReview(event)" class="space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <input type="text" id="rev-name" placeholder="اسمك الكريم" required class="w-full p-2.5 rounded-xl bg-[#1f1f1f] border border-[#D4AF37]/30 text-xs text-[#F3E5AB] focus:outline-none">
+              <input type="text" id="rev-loc" placeholder="المنطقة أو الفرع (مثال: شارع مازن)" class="w-full p-2.5 rounded-xl bg-[#1f1f1f] border border-[#D4AF37]/30 text-xs text-[#F3E5AB] focus:outline-none">
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <input type="text" id="rev-item" placeholder="الصنف اللي جربته (مثال: بسبوسة مكسرات)" class="w-full p-2.5 rounded-xl bg-[#1f1f1f] border border-[#D4AF37]/30 text-xs text-[#F3E5AB] focus:outline-none">
+              <select id="rev-rating" class="w-full p-2.5 rounded-xl bg-[#1f1f1f] border border-[#D4AF37]/30 text-xs text-[#F3E5AB] focus:outline-none">
+                <option value="5">⭐⭐⭐⭐⭐ ممتاز (5 من 5)</option>
+                <option value="4">⭐⭐⭐⭐ جيد جداً (4 من 5)</option>
+                <option value="3">⭐⭐⭐ جيد (3 من 5)</option>
+              </select>
+            </div>
+            <textarea id="rev-text" rows="3" placeholder="اكتب تجربتك الصادقة وملاحظاتك..." required class="w-full p-2.5 rounded-xl bg-[#1f1f1f] border border-[#D4AF37]/30 text-xs text-[#F3E5AB] focus:outline-none"></textarea>
+            <button type="submit" class="w-full py-3 rounded-xl bg-[#D4AF37] hover:bg-[#C5A059] text-black font-black text-xs transition-all flex items-center justify-center gap-2">
+              <i class="fab fa-whatsapp text-sm"></i>
+              <span>إرسال التقييم عبر واتساب</span>
+            </button>
+          </form>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 9. Contact & Delivery Zones -->
+    <section id="contact" class="py-16 border-b border-[#D4AF37]/20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center space-y-2 mb-10">
+          <span class="text-xs font-bold text-[#D4AF37]">📞 خدمة الدليفري والخط الساخن</span>
+          <h2 class="text-2xl sm:text-4xl font-black font-calligraphy-arabic text-[#F3E5AB]">
+            التواصل المباشر ومناطق التوصيل بسوهاج
+          </h2>
+          <p class="text-xs sm:text-sm text-[#F3E5AB]/70 max-w-xl mx-auto">
+            أسطول دليفري سريع ومجهز بحوافظ حرارية لضمان وصول الحلويات طازجة ومقرمشة
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          <!-- Contact Channels -->
+          <div class="lg:col-span-5 space-y-4 text-right">
+            <a href="tel:16432" class="p-5 rounded-2xl bg-[#141414] border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all flex items-center gap-4 block group">
+              <div class="w-12 h-12 rounded-xl bg-[#D4AF37] text-black flex items-center justify-center text-lg font-black shrink-0">
+                <i class="fas fa-phone-alt"></i>
+              </div>
+              <div>
+                <h4 class="text-sm font-black text-[#F3E5AB] group-hover:text-[#D4AF37]">الخط الساخن الموحد (16432)</h4>
+                <p class="text-xs text-[#F3E5AB]/70 mt-0.5">طلب فوري ودليفري لجميع أحياء ومراكز سوهاج</p>
+              </div>
+            </a>
+
+            <a href="https://wa.me/201225254447" target="_blank" class="p-5 rounded-2xl bg-[#141414] border border-[#D4AF37]/30 hover:border-[#D4AF37] transition-all flex items-center gap-4 block group">
+              <div class="w-12 h-12 rounded-xl bg-[#25D366] text-white flex items-center justify-center text-xl shrink-0">
+                <i class="fab fa-whatsapp"></i>
+              </div>
+              <div>
+                <h4 class="text-sm font-black text-[#F3E5AB] group-hover:text-[#D4AF37]">واتساب الطلبات السريعة (01225254447)</h4>
+                <p class="text-xs text-[#F3E5AB]/70 mt-0.5">إرسال صور التورتات وموقع التوصيل عبر اللوكيشن</p>
+              </div>
+            </a>
+
+            <div class="p-5 rounded-2xl bg-[#141414] border border-[#D4AF37]/20 space-y-2">
+              <h4 class="text-xs font-bold text-[#D4AF37]">ساعات العمل وخدمة التوصيل:</h4>
+              <p class="text-xs text-[#F3E5AB]/80">يومياً من 7:00 صباحاً حتى 3:00 فجراً بدون عطلات</p>
+            </div>
+          </div>
+
+          <!-- Delivery Zones Table -->
+          <div class="lg:col-span-7 bg-[#141414] p-6 rounded-3xl border border-[#D4AF37]/25 text-right">
+            <h3 class="text-sm font-bold text-[#D4AF37] mb-4 flex items-center gap-2">
+              <i class="fas fa-motorcycle"></i>
+              <span>رسوم ومواعيد التوصيل لمناطق ومراكز سوهاج:</span>
+            </h3>
+            <div class="space-y-2.5">
+              <div class="p-3 rounded-xl bg-black/40 flex items-center justify-between text-xs border border-[#D4AF37]/15">
+                <span class="font-bold text-[#F3E5AB]">حي شرق سوهاج وكورنيش النيل وشارع مازن</span>
+                <span class="text-[#D4AF37] font-black">20 ج.م · 20 - 30 دقيقة</span>
+              </div>
+              <div class="p-3 rounded-xl bg-black/40 flex items-center justify-between text-xs border border-[#D4AF37]/15">
+                <span class="font-bold text-[#F3E5AB]">قسم أول وميدان الشبان المسلمين وحي غرب</span>
+                <span class="text-[#D4AF37] font-black">20 ج.م · 20 - 30 دقيقة</span>
+              </div>
+              <div class="p-3 rounded-xl bg-black/40 flex items-center justify-between text-xs border border-[#D4AF37]/15">
+                <span class="font-bold text-[#F3E5AB]">قسم ثان وشارع التحرير ومنطقة الزهراء</span>
+                <span class="text-[#D4AF37] font-black">20 ج.م · 20 - 35 دقيقة</span>
+              </div>
+              <div class="p-3 rounded-xl bg-black/40 flex items-center justify-between text-xs border border-[#D4AF37]/15">
+                <span class="font-bold text-[#F3E5AB]">مركز ومدينة أخميم والصوامعة وقرى شرق النيل</span>
+                <span class="text-[#D4AF37] font-black">30 ج.م · 25 - 40 دقيقة</span>
+              </div>
+              <div class="p-3 rounded-xl bg-black/40 flex items-center justify-between text-xs border border-[#D4AF37]/15">
+                <span class="font-bold text-[#F3E5AB]">طريق أسيوط الصحراوي وقرية الحمادية والمحور الغربي</span>
+                <span class="text-[#D4AF37] font-black">35 ج.م · 30 - 45 دقيقة</span>
+              </div>
+              <div class="p-3 rounded-xl bg-black/40 flex items-center justify-between text-xs border border-[#D4AF37]/15">
+                <span class="font-bold text-[#F3E5AB]">المراكز الخارجية (طهطا، طما، جرجا، المنشأة)</span>
+                <span class="text-[#D4AF37] font-black">60 ج.م · حجز مسبق للأفراح</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- 10. Footer -->
+  <footer class="bg-[#080808] border-t border-[#D4AF37]/30 py-12 text-center text-xs text-[#F3E5AB]/70">
+    <div class="max-w-7xl mx-auto px-4 space-y-4">
+      <div class="flex items-center justify-center gap-2 text-lg font-black font-calligraphy-arabic text-[#D4AF37]">
+        <i class="fas fa-crown"></i>
+        <span>حلواني الأصيل بمحافظة سوهاج</span>
+      </div>
+      <p class="max-w-md mx-auto leading-relaxed">
+        صانعو أشهى الحلويات الشرقية بالسمن البلدي الفلاحي الصافي، وتورتات الكيك ديزاين والجيلاتو الإيطالي والمخبوزات منذ 2004.
+      </p>
+      <div class="flex items-center justify-center gap-4 text-sm text-[#D4AF37] pt-2">
+        <a href="https://wa.me/201225254447" target="_blank" class="hover:text-white transition-colors"><i class="fab fa-whatsapp"></i></a>
+        <a href="tel:16432" class="hover:text-white transition-colors"><i class="fas fa-phone-alt"></i></a>
+        <a href="https://maps.google.com/?q=26.5615,31.6990" target="_blank" class="hover:text-white transition-colors"><i class="fas fa-map-marker-alt"></i></a>
+      </div>
+      <p class="text-[11px] text-neutral-600 pt-4 border-t border-neutral-900">
+        جميع الحقوق محفوظة © 2026 - حلواني الأصيل سوهاج
+      </p>
+    </div>
+  </footer>
+
+  <!-- 11. Floating Action Button: Scroll To Top -->
+  <button id="scroll-top-btn"
+    class="fixed bottom-6 left-6 z-40 w-11 h-11 rounded-full bg-[#1A1A1A] text-[#D4AF37] border border-[#D4AF37]/50 shadow-2xl flex items-center justify-center opacity-0 pointer-events-none translate-y-4 transition-all duration-300 hover:scale-110">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <!-- 12. Product Details Modal -->
+  <div id="product-modal"
+    class="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div id="modal-content" class="w-full flex justify-center">
+      <!-- Injected via ModalManager in script.js -->
+    </div>
+  </div>
+
+  <!-- Scripts (Pure Vanilla JS & Data مثل CODX) -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="./data.js"></script>
+  <script src="./script.js"></script>
+</body>
+
 </html>
