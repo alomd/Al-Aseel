@@ -8,13 +8,151 @@
   --bg-dark: #0d0d0d;
   --bg-dark-card: #141414;
   --text-cream: #F3E5AB;
+
+  /* Light mode defaults */
+  --site-bg: #faf8f5;
+  --site-text: #1f1b14;
+  --site-card-bg: #ffffff;
+  --site-card-border: rgba(212, 175, 55, 0.35);
+  --site-subtext: #594f43;
+  --site-header-bg: rgba(255, 255, 255, 0.95);
+}
+
+html.dark {
+  --site-bg: #0d0d0d;
+  --site-text: #F3E5AB;
+  --site-card-bg: #141414;
+  --site-card-border: rgba(212, 175, 55, 0.25);
+  --site-subtext: rgba(243, 229, 171, 0.7);
+  --site-header-bg: rgba(13, 13, 13, 0.95);
 }
 
 body {
   font-family: 'Cairo', 'Plus Jakarta Sans', sans-serif;
-  background-color: var(--bg-dark);
-  color: var(--text-cream);
+  background-color: var(--site-bg);
+  color: var(--site-text);
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Light mode overrides for Tailwind elements that were hardcoded to dark colors */
+html:not(.dark) body {
+  background-color: #faf8f5 !important;
+  color: #1f1b14 !important;
+}
+
+html:not(.dark) #main-header {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  border-color: rgba(212, 175, 55, 0.3) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+html:not(.dark) nav a {
+  color: #3d352a !important;
+}
+
+html:not(.dark) nav a:hover {
+  color: #b3822a !important;
+}
+
+html:not(.dark) .theme-toggle-btn {
+  background-color: #f0ebe1 !important;
+  color: #b3822a !important;
+  border-color: rgba(212, 175, 55, 0.4) !important;
+}
+
+html:not(.dark) #mobile-menu-btn {
+  background-color: #f0ebe1 !important;
+  color: #b3822a !important;
+}
+
+html:not(.dark) #mobile-nav-drawer {
+  background-color: #ffffff !important;
+  color: #1f1b14 !important;
+}
+
+html:not(.dark) #mobile-nav-drawer a {
+  color: #2b251c !important;
+}
+
+html:not(.dark) h1, 
+html:not(.dark) h2, 
+html:not(.dark) h3, 
+html:not(.dark) h4 {
+  color: #1a1610 !important;
+}
+
+html:not(.dark) p {
+  color: #4a4237 !important;
+}
+
+html:not(.dark) #showcase,
+html:not(.dark) #custom-order,
+html:not(.dark) #testimonials {
+  background-color: #f4efe6 !important;
+}
+
+html:not(.dark) #menu,
+html:not(.dark) #branches,
+html:not(.dark) #contact,
+html:not(.dark) #hero {
+  background-color: #faf8f5 !important;
+}
+
+html:not(.dark) #products-grid > div,
+html:not(.dark) #showcase .grid > div,
+html:not(.dark) #testimonials .grid > div,
+html:not(.dark) #branches-list > div,
+html:not(.dark) #custom-order form,
+html:not(.dark) #contact .grid > div {
+  background-color: #ffffff !important;
+  border-color: rgba(212, 175, 55, 0.35) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06) !important;
+}
+
+html:not(.dark) input,
+html:not(.dark) textarea,
+html:not(.dark) select {
+  background-color: #f7f4ee !important;
+  color: #1a1610 !important;
+  border-color: rgba(212, 175, 55, 0.4) !important;
+}
+
+html:not(.dark) footer {
+  background-color: #14120f !important;
+  color: #e5dbc9 !important;
+}
+
+html:not(.dark) footer h3,
+html:not(.dark) footer h4,
+html:not(.dark) footer span {
+  color: #F3E5AB !important;
+}
+
+html:not(.dark) footer p {
+  color: #c9bea9 !important;
+}
+
+html:not(.dark) #dev-floating-btn {
+  background: linear-gradient(135deg, #ffffff, #f0ebe1) !important;
+  box-shadow: 0 6px 25px rgba(212, 175, 55, 0.35) !important;
+}
+
+html:not(.dark) #developer-modal > div {
+  background: #ffffff !important;
+  color: #1a1610 !important;
+  border-color: #D4AF37 !important;
+}
+
+html:not(.dark) #developer-modal .bg-black\/40 {
+  background-color: #f7f4ee !important;
+  border-color: rgba(212, 175, 55, 0.3) !important;
+}
+
+html:not(.dark) #scroll-top-btn {
+  background-color: #ffffff !important;
+  color: #b3822a !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15) !important;
 }
 
 .font-calligraphy-arabic {
