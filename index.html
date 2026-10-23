@@ -13,8 +13,11 @@
   <meta property="og:description" content="عراقة الصنعة بالسمن البلدي الفلاحي الصافي منذ 2004 في سوهاج." />
   <meta property="og:image" content="./images/hero_oriental_pastry_atelier_1790628925750.jpg" />
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg" />
+  <!-- Favicon & Browser Tab Logo -->
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <link rel="alternate icon" type="image/svg+xml" href="./assets/favicon.svg" />
+  <link rel="apple-touch-icon" href="./favicon.svg" />
+  <meta name="theme-color" content="#D4AF37" />
 
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,7 +50,69 @@
   <link rel="stylesheet" href="./style.css" />
 </head>
 
-<body class="bg-[#0d0d0d] text-[#F3E5AB] antialiased selection:bg-[#D4AF37] selection:text-black">
+<body class="bg-[#0d0d0d] text-[#F3E5AB] antialiased selection:bg-[#D4AF37] selection:text-black relative">
+
+  <!-- ============================================== -->
+  <!-- 0. Prestige Welcome SplashScreen (شاشة التحميل) -->
+  <!-- ============================================== -->
+  <div id="welcome-splash" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#080808]/98 backdrop-blur-2xl transition-all duration-700 ease-out">
+    <!-- Ambient Golden Glow -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-gradient-to-r from-[#D4AF37]/20 via-[#c59b27]/10 to-transparent rounded-full blur-3xl animate-pulse"></div>
+    </div>
+
+    <div class="max-w-md w-full mx-auto text-center relative z-10 space-y-6">
+      <!-- Monogram with spinning rings -->
+      <div class="relative inline-flex items-center justify-center">
+        <div class="absolute -inset-3.5 rounded-full border border-dashed border-[#D4AF37]/60 animate-spin" style="animation-duration: 20s;"></div>
+        <div class="absolute -inset-1 rounded-3xl bg-gradient-to-r from-[#D4AF37] via-[#fae084] to-[#b3822a] opacity-75 blur-xs animate-pulse"></div>
+        <div class="relative w-24 h-24 rounded-3xl bg-[#0d0d0d] text-[#D4AF37] border-2 border-[#D4AF37] shadow-2xl flex flex-col items-center justify-center">
+          <span class="font-serif-arabic font-black text-5xl leading-none">أ</span>
+          <span class="text-[9px] font-black text-[#F3E5AB]/70 -mt-1 tracking-widest uppercase">الأصيل</span>
+        </div>
+      </div>
+
+      <!-- Title & Tradition -->
+      <div class="space-y-1">
+        <div class="inline-flex items-center justify-center gap-2 text-xs font-bold text-[#D4AF37] uppercase tracking-wider">
+          <span>⚜️</span>
+          <span>عراقة الضيافة السوهاجية منذ 2004</span>
+          <span>⚜️</span>
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-black font-calligraphy-arabic text-[#F3E5AB]">
+          حلواني الأصيل بمحافظة سوهاج
+        </h2>
+        <p class="text-xs text-[#F3E5AB]/70 font-light">
+          صانعو أشهى الحلويات الشرقية بالسمن البلدي الفلاحي الصافي 100%
+        </p>
+      </div>
+
+      <!-- Animated Progress Bar -->
+      <div class="space-y-2 pt-2">
+        <div class="h-2 w-full bg-[#1c1c1c] rounded-full overflow-hidden p-0.5 border border-[#D4AF37]/30 shadow-inner">
+          <div id="splash-progress-bar" class="h-full bg-gradient-to-r from-[#b3822a] via-[#fae084] to-[#D4AF37] rounded-full transition-all duration-200 ease-out shadow-[0_0_12px_rgba(212,175,55,0.7)]" style="width: 15%"></div>
+        </div>
+        <div class="flex items-center justify-between text-[11px] text-[#F3E5AB]/70 font-medium px-1">
+          <span id="splash-step-text">انتقاء أجود خامات السمن البلدي الفلاحي...</span>
+          <span id="splash-percentage" class="text-[#D4AF37] font-black">15%</span>
+        </div>
+      </div>
+
+      <!-- Quick Skip Button -->
+      <div>
+        <button id="splash-skip-btn" class="px-5 py-2 rounded-xl bg-[#171717] hover:bg-[#222222] text-[#D4AF37] text-xs font-bold border border-[#D4AF37]/30 transition-all hover:scale-105">
+          دخول فوري للموقع <i class="fas fa-arrow-left mr-1"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- Background: Flux Lines Canvas (الخلفية المطلوبة) -->
+  <!-- ============================================== -->
+  <div class="flux-lines-container fixed inset-0 pointer-events-none z-0">
+    <canvas id="flux-canvas" class="flux-lines-canvas"></canvas>
+  </div>
 
   <!-- 1. Realtime Scroll Progress Bar -->
   <div id="scroll-progress"
@@ -772,118 +837,138 @@
     </section>
   </main>
 
-  <!-- Developer Profile Card / بطاقة تعريفية بمطور الموقع -->
-  <section id="developer" class="py-12 bg-gradient-to-b from-[#0d0d0d] via-[#121212] to-[#080808] border-t border-[#D4AF37]/25 relative overflow-hidden">
-    <!-- Glow Effect Background -->
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#D4AF37]/5 rounded-full blur-3xl pointer-events-none"></div>
+  <!-- ============================================== -->
+  <!-- 11. Floating Developer Circular Trigger & Modal -->
+  <!-- ============================================== -->
+  <!-- Interactive Floating Circle for Developer (دائرة صغيرة للمطور) -->
+  <button id="dev-floating-btn" onclick="DeveloperModalManager.openModal()"
+    class="fixed bottom-6 right-6 z-40 w-13 h-13 rounded-full bg-gradient-to-tr from-[#111] via-[#1a1a1a] to-[#252525] text-[#D4AF37] border-2 border-[#D4AF37] shadow-[0_4px_20px_rgba(212,175,55,0.4)] flex items-center justify-center transition-all duration-300 hover:scale-115 dev-trigger-pulse group"
+    title="بطاقة مطور الموقع | العمده" aria-label="بيانات المطور">
+    <div class="relative flex items-center justify-center">
+      <i class="fas fa-code text-lg text-[#D4AF37] group-hover:rotate-12 transition-transform"></i>
+      <span class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 border border-black animate-ping"></span>
+      <span class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-400 border border-black"></span>
+    </div>
+  </button>
 
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
-      <div class="p-6 sm:p-8 rounded-3xl bg-[#161616]/90 border border-[#D4AF37]/30 shadow-[0_10px_35px_rgba(212,175,55,0.12)] backdrop-blur-md">
-        
-        <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-right">
+  <!-- Developer Profile Interactive Modal (نافذة بيانات المطور والموقع) -->
+  <div id="developer-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="relative bg-gradient-to-b from-[#161616] to-[#0e0e0e] rounded-3xl overflow-hidden border-2 border-[#D4AF37] max-w-lg w-full text-right shadow-[0_20px_60px_rgba(212,175,55,0.3)] animate-in fade-in zoom-in-95 duration-300">
+      
+      <!-- Close Button -->
+      <button onclick="DeveloperModalManager.closeModal()" 
+        class="absolute top-4 left-4 z-20 w-9 h-9 rounded-full bg-black/80 text-[#D4AF37] border border-[#D4AF37]/40 flex items-center justify-center hover:scale-110 hover:bg-[#D4AF37] hover:text-black transition-all">
+        <i class="fas fa-times text-sm"></i>
+      </button>
+
+      <!-- Modal Header Banner -->
+      <div class="relative h-28 bg-gradient-to-r from-[#201808] via-[#3d2f10] to-[#141414] border-b border-[#D4AF37]/30 flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#D4AF37_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <div class="text-center z-10">
+          <span class="text-[10px] font-black uppercase tracking-widest text-[#fae084] px-3 py-1 rounded-full bg-black/60 border border-[#D4AF37]/40">
+            <i class="fas fa-terminal ml-1"></i> بطاقة المطور الرسمية
+          </span>
+        </div>
+      </div>
+
+      <!-- Avatar & Status -->
+      <div class="px-6 -mt-12 flex items-end justify-between relative z-10">
+        <div class="w-22 h-22 rounded-2xl bg-gradient-to-br from-[#D4AF37] via-[#b3822a] to-[#735118] p-0.5 shadow-2xl flex items-center justify-center">
+          <div class="w-full h-full bg-[#111111] rounded-[14px] flex flex-col items-center justify-center">
+            <i class="fas fa-laptop-code text-3xl text-[#D4AF37] mb-0.5"></i>
+            <span class="text-[9px] font-black tracking-widest text-[#fae084] uppercase">DEV</span>
+          </div>
+        </div>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold mb-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          متاح للمشاريع الجديدة
+        </span>
+      </div>
+
+      <!-- Content -->
+      <div class="p-6 pt-4 space-y-4">
+        <div>
+          <span class="text-xs font-bold text-[#D4AF37]">الاسم والصفة البرمجية:</span>
+          <h3 class="text-2xl font-black text-[#F3E5AB] font-serif-arabic mt-0.5 flex items-center gap-2">
+            <span>العمده</span>
+            <span class="text-xs px-2.5 py-0.5 rounded-lg bg-[#D4AF37]/15 border border-[#D4AF37]/30 text-[#D4AF37] font-mono">AL3OMDA</span>
+          </h3>
+          <p class="text-xs text-[#F3E5AB]/75 leading-relaxed mt-2 font-light">
+            مطور ويب وتطبيقات متكاملة (Full-Stack Web Developer). تم تصميم وبرمجة موقع حلواني الأصيل ليعمل بأعلى درجات السرعة والأناقة والاستجابة على كافة الشاشات.
+          </p>
+        </div>
+
+        <!-- Details Grid (Website, Contact, Role) -->
+        <div class="space-y-2.5 pt-2 border-t border-[#D4AF37]/15 text-xs">
           
-          <!-- Avatar / Developer Badge -->
-          <div class="relative shrink-0">
-            <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-[#D4AF37] via-[#b3822a] to-[#735118] p-0.5 shadow-xl shadow-[#D4AF37]/20 flex items-center justify-center">
-              <div class="w-full h-full bg-[#111111] rounded-[14px] flex items-center justify-center flex-col">
-                <i class="fas fa-code text-2xl sm:text-3xl text-[#D4AF37] mb-1"></i>
-                <span class="text-[9px] font-black tracking-widest text-[#fae084] uppercase">DEV</span>
+          <!-- Website Link -->
+          <div class="p-3 rounded-2xl bg-black/40 border border-[#D4AF37]/25 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-xl bg-[#D4AF37]/15 text-[#D4AF37] flex items-center justify-center">
+                <i class="fas fa-globe"></i>
+              </div>
+              <div>
+                <span class="text-[10px] text-neutral-400 block">الموقع الإلكتروني / المعرض:</span>
+                <span class="font-bold text-[#F3E5AB]">alaseel-sweets.vercel.app</span>
               </div>
             </div>
-            <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-[#D4AF37] text-black text-[10px] font-black whitespace-nowrap shadow-md">
-              مطور الويب
-            </div>
+            <a href="https://github.com/AL3OMDA2001" target="_blank" rel="noopener noreferrer" 
+              class="px-3 py-1.5 rounded-xl bg-[#D4AF37] hover:bg-[#C5A059] text-black font-black text-[11px] transition-all flex items-center gap-1">
+              <span>زيارة الموقع</span>
+              <i class="fas fa-external-link-alt text-[10px]"></i>
+            </a>
           </div>
 
-          <!-- Developer Info -->
-          <div class="flex-1 space-y-3">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <div>
-                <span class="text-[11px] font-bold text-[#D4AF37] tracking-wider uppercase flex items-center justify-center sm:justify-start gap-1.5">
-                  <i class="fas fa-laptop-code"></i> تصميم وتطوير المنصة
-                </span>
-                <h3 class="text-xl sm:text-2xl font-black text-[#F3E5AB] font-serif-arabic mt-0.5">
-                  العمده | AL3OMDA
-                </h3>
+          <!-- GitHub Profile -->
+          <div class="p-3 rounded-2xl bg-black/40 border border-[#D4AF37]/25 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-xl bg-white/10 text-white flex items-center justify-center">
+                <i class="fab fa-github"></i>
               </div>
-              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold self-center sm:self-auto">
-                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                متاح للمشاريع
-              </span>
+              <div>
+                <span class="text-[10px] text-neutral-400 block">حساب GitHub:</span>
+                <span class="font-bold text-[#F3E5AB]">github.com/AL3OMDA2001</span>
+              </div>
             </div>
-
-            <p class="text-xs sm:text-sm text-[#F3E5AB]/75 leading-relaxed font-light">
-              مطور واجهات ومواقع ويب متكاملة (Full-Stack & Frontend Web Developer). تم تصميم وبرمجة موقع حلواني الأصيل ليعمل بأعلى معايير السرعة، الاستجابة الفائقة على كافة الشاشات، والهوية البصرية الملكية.
-            </p>
-
-            <!-- Skills & Tech Badges -->
-            <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
-              <span class="px-2.5 py-1 rounded-lg bg-black/60 border border-[#D4AF37]/20 text-[11px] text-[#fae084] font-medium">
-                <i class="fab fa-html5 ml-1 text-orange-400"></i> Modern Web
-              </span>
-              <span class="px-2.5 py-1 rounded-lg bg-black/60 border border-[#D4AF37]/20 text-[11px] text-[#fae084] font-medium">
-                <i class="fab fa-js-square ml-1 text-yellow-400"></i> JavaScript
-              </span>
-              <span class="px-2.5 py-1 rounded-lg bg-black/60 border border-[#D4AF37]/20 text-[11px] text-[#fae084] font-medium">
-                <i class="fab fa-react ml-1 text-cyan-400"></i> UI/UX Design
-              </span>
-              <span class="px-2.5 py-1 rounded-lg bg-black/60 border border-[#D4AF37]/20 text-[11px] text-[#fae084] font-medium">
-                <i class="fab fa-github ml-1 text-white"></i> GitHub Pages Ready
-              </span>
-            </div>
-
-            <!-- Social / Contact Links -->
-            <div class="flex items-center justify-center sm:justify-start gap-3 pt-2 text-xs">
-              <a href="https://github.com" target="_blank" rel="noopener noreferrer" 
-                class="px-3 py-1.5 rounded-xl bg-[#1f1f1f] hover:bg-[#2a2a2a] text-[#F3E5AB] border border-[#D4AF37]/30 transition-all flex items-center gap-1.5 group">
-                <i class="fab fa-github text-[#D4AF37] group-hover:text-white transition-colors"></i>
-                <span>GitHub</span>
-              </a>
-              <a href="https://wa.me/201225254447" target="_blank" rel="noopener noreferrer"
-                class="px-3 py-1.5 rounded-xl bg-[#1f1f1f] hover:bg-[#2a2a2a] text-[#F3E5AB] border border-[#D4AF37]/30 transition-all flex items-center gap-1.5 group">
-                <i class="fab fa-whatsapp text-emerald-400"></i>
-                <span>تواصل مع المطور</span>
-              </a>
-            </div>
-
+            <a href="https://github.com/AL3OMDA2001" target="_blank" rel="noopener noreferrer" 
+              class="px-3 py-1.5 rounded-xl bg-[#1e1e1e] hover:bg-[#282828] text-[#F3E5AB] border border-[#D4AF37]/30 font-bold text-[11px] transition-all flex items-center gap-1">
+              <span>الملف الشخصي</span>
+              <i class="fas fa-chevron-left text-[9px]"></i>
+            </a>
           </div>
 
         </div>
 
-      </div>
-    </div>
-  </section>
+        <!-- Skills Badges -->
+        <div class="flex flex-wrap items-center gap-1.5 pt-1">
+          <span class="px-2.5 py-1 rounded-lg bg-black/60 border border-[#D4AF37]/20 text-[10px] text-[#fae084]">React & TypeScript</span>
+          <span class="px-2.5 py-1 rounded-lg bg-black/60 border border-[#D4AF37]/20 text-[10px] text-[#fae084]">Tailwind CSS</span>
+          <span class="px-2.5 py-1 rounded-lg bg-black/60 border border-[#D4AF37]/20 text-[10px] text-[#fae084]">Full-Stack & APIs</span>
+          <span class="px-2.5 py-1 rounded-lg bg-black/60 border border-[#D4AF37]/20 text-[10px] text-[#fae084]">SEO & Web Speed</span>
+        </div>
 
-  <!-- 10. Footer -->
-  <footer class="bg-[#080808] border-t border-[#D4AF37]/30 py-12 text-center text-xs text-[#F3E5AB]/70">
-    <div class="max-w-7xl mx-auto px-4 space-y-4">
-      <div class="flex items-center justify-center gap-2 text-lg font-black font-calligraphy-arabic text-[#D4AF37]">
-        <i class="fas fa-crown"></i>
-        <span>حلواني الأصيل بمحافظة سوهاج</span>
-      </div>
-      <p class="max-w-md mx-auto leading-relaxed">
-        صانعو أشهى الحلويات الشرقية بالسمن البلدي الفلاحي الصافي، وتورتات الكيك ديزاين والجيلاتو الإيطالي والمخبوزات منذ 2004.
-      </p>
-      <div class="flex items-center justify-center gap-4 text-sm text-[#D4AF37] pt-2">
-        <a href="https://wa.me/201225254447" target="_blank" class="hover:text-white transition-colors"><i class="fab fa-whatsapp"></i></a>
-        <a href="tel:16432" class="hover:text-white transition-colors"><i class="fas fa-phone-alt"></i></a>
-        <a href="https://maps.google.com/?q=26.5615,31.6990" target="_blank" class="hover:text-white transition-colors"><i class="fas fa-map-marker-alt"></i></a>
-      </div>
-      <p class="text-[11px] text-neutral-500 pt-4 border-t border-neutral-900 flex flex-wrap items-center justify-center gap-1">
-        <span>جميع الحقوق محفوظة © 2026 - حلواني الأصيل سوهاج</span>
-        <span>·</span>
-        <span>تصميم وبرمجة: <a href="#developer" class="text-[#D4AF37] hover:underline font-bold">العمده (AL3OMDA)</a></span>
-      </p>
-    </div>
-  </footer>
+        <!-- Actions -->
+        <div class="pt-3 border-t border-[#D4AF37]/20 flex items-center gap-3">
+          <a href="https://wa.me/201225254447?text=${encodeURIComponent('السلام عليكم أستاذ العمده، شاهدت أعمالك وأرغب في التواصل معك لمشروع برمجي.')}" 
+            target="_blank" rel="noopener noreferrer"
+            class="flex-1 py-2.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white font-black text-xs flex items-center justify-center gap-2 shadow-md transition-all">
+            <i class="fab fa-whatsapp text-sm"></i>
+            <span>تواصل مباشرة عبر واتساب</span>
+          </a>
+        </div>
 
-  <!-- 11. Floating Action Button: Scroll To Top -->
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 12. Floating Action Button: Scroll To Top -->
   <button id="scroll-top-btn"
     class="fixed bottom-6 left-6 z-40 w-11 h-11 rounded-full bg-[#1A1A1A] text-[#D4AF37] border border-[#D4AF37]/50 shadow-2xl flex items-center justify-center opacity-0 pointer-events-none translate-y-4 transition-all duration-300 hover:scale-110">
     <i class="fas fa-arrow-up"></i>
   </button>
 
-  <!-- 12. Product Details Modal -->
+  <!-- 13. Product Details Modal -->
   <div id="product-modal"
     class="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs hidden items-center justify-center p-4">
     <div id="modal-content" class="w-full flex justify-center">

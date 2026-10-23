@@ -607,6 +607,143 @@ const SecurityManager = {
   }
 };
 
+// --- 11. Interactive Developer Profile Modal Manager ---
+const DeveloperModalManager = {
+  openModal() {
+    const modal = document.getElementById('developer-modal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+  },
+
+  closeModal() {
+    const modal = document.getElementById('developer-modal');
+    if (!modal) return;
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.style.overflow = '';
+  }
+};
+
+// Close modal when clicking on the backdrop
+document.addEventListener('click', (e) => {
+  const modal = document.getElementById('developer-modal');
+  if (modal && e.target === modal) {
+    DeveloperModalManager.closeModal();
+  }
+});
+
+// --- 12. Prestige Welcome Splash Screen Manager ---
+const SplashScreenManager = {
+  init() {
+    const splash = document.getElementById('welcome-splash');
+    const bar = document.getElementById('splash-progress-bar');
+    const perc = document.getElementById('splash-percentage');
+    const text = document.getElementById('splash-step-text');
+    const skipBtn = document.getElementById('splash-skip-btn');
+
+    if (!splash) return;
+
+    const steps = [
+      'انتقاء أجود خامات السمن البلدي الفلاحي الصافي...',
+      'تجهيز منيو الحلويات الشرقية وتورتات المناسبات...',
+      'ربط فروع سوهاج الخمسة والخرائط التفاعلية...',
+      'مرحباً بكم في رحاب حلواني الأصيل بسوهاج ⚜️'
+    ];
+
+    let progress = 12;
+    const interval = setInterval(() => {
+      const increment = Math.floor(Math.random() * 8) + 12;
+      progress = Math.min(100, progress + increment);
+
+      if (bar) bar.style.width = `${progress}%`;
+      if (perc) perc.textContent = `${progress}%`;
+
+      if (text) {
+        if (progress >= 85) text.textContent = steps[3];
+        else if (progress >= 55) text.textContent = steps[2];
+        else if (progress >= 25) text.textContent = steps[1];
+      }
+
+      if (progress >= 100) {
+        clearInterval(interval);
+        setTimeout(() => this.dismiss(), 400);
+      }
+    }, 120);
+
+    if (skipBtn) {
+      skipBtn.addEventListener('click', () => {
+        clearInterval(interval);
+        this.dismiss();
+      });
+    }
+  },
+
+  dismiss() {
+    const splash = document.getElementById('welcome-splash');
+    if (!splash) return;
+    splash.classList.add('opacity-0', 'scale-105', 'pointer-events-none');
+    setTimeout(() => {
+      splash.style.display = 'none';
+    }, 600);
+  }
+};
+
+// --- 13. Dynamic Golden Flux Lines Canvas Background ---
+const FluxLinesManager = {
+  init() {
+    const canvas = document.getElementById('flux-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    // Waves configuration for flux lines
+    const lineCount = 18;
+    let step = 0;
+
+    const render = () => {
+      ctx.clearRect(0, 0, width, height);
+      step += 0.012;
+
+      for (let i = 0; i < lineCount; i++) {
+        ctx.beginPath();
+        const baseOpacity = 0.04 + (i / lineCount) * 0.12;
+        ctx.strokeStyle = `rgba(212, 175, 55, ${baseOpacity})`;
+        ctx.lineWidth = 1 + (i % 3 === 0 ? 0.8 : 0.3);
+
+        const yOffset = (height / lineCount) * i;
+        const waveSpeed = step + i * 0.25;
+
+        for (let x = 0; x <= width; x += 15) {
+          const sin1 = Math.sin(x * 0.003 + waveSpeed) * 35;
+          const cos1 = Math.cos(x * 0.002 - waveSpeed * 0.5) * 25;
+          const y = yOffset + sin1 + cos1;
+
+          if (x === 0) {
+            ctx.moveTo(x, y);
+          } else {
+            ctx.lineTo(x, y);
+          }
+        }
+        ctx.stroke();
+      }
+
+      requestAnimationFrame(render);
+    };
+
+    render();
+  }
+};
+
 // --- Initializer on Page Load ---
 document.addEventListener('DOMContentLoaded', () => {
   ThemeManager.init();
@@ -616,6 +753,17 @@ document.addEventListener('DOMContentLoaded', () => {
   BranchesManager.init();
   MobileNavManager.init();
   SecurityManager.init();
+  SplashScreenManager.init();
+  FluxLinesManager.init();
+
+  // Wire developer link in navbar/footer to open the interactive modal
+  const devLinks = document.querySelectorAll('a[href="#developer"]');
+  devLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      DeveloperModalManager.openModal();
+    });
+  });
 
   // Initialize Lucide icons if available
   if (typeof lucide !== 'undefined') {
