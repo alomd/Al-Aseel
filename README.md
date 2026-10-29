@@ -28,12 +28,3 @@ Al-Aseel Confectionery Project/
 ├── style.css                   # التنسيقات والخطوط المخصصة
 ├── images/                     # صور المنتجات وتورت المناسبات والفروع
 └── favicon.svg                 # أيقونة وشعار الموقع
-```
-
----
-
-## 🌐 النشر على GitHub Pages:
-1. ارفع المشروع إلى مستودع GitHub الخاص بك.
-2. توجه إلى **Settings** > **Pages**.
-3. اختر **Deploy from a branch** وحدد فرع `main` والمجلد `/ (root)`.
-4. اضغط **Save** وسيعمل الموقع أونلاين فوراً دون الحاجة لأي GitHub Actions.
