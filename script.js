@@ -26,18 +26,74 @@ const AppState = {
   }
 };
 
-// --- 2. Theme Manager (Dark / Light) ---
+// --- 2. Theme Manager (Dark / Light with Circular Reveal Transition) ---
 const ThemeManager = {
   init() {
     this.apply(AppState.theme);
     const toggles = document.querySelectorAll('.theme-toggle-btn');
     toggles.forEach(btn => {
-      btn.addEventListener('click', () => {
-        AppState.theme = AppState.theme === 'dark' ? 'light' : 'dark';
-        this.apply(AppState.theme);
+      btn.addEventListener('click', (event) => {
+        // Aesthetic ripple & spin animation on button itself
+        btn.classList.add('theme-toggle-clicked');
+        setTimeout(() => btn.classList.remove('theme-toggle-clicked'), 600);
+
+        const newTheme = AppState.theme === 'dark' ? 'light' : 'dark';
+        this.toggleWithTransition(newTheme, event);
       });
     });
   },
+
+  toggleWithTransition(newTheme, event) {
+    if (!document.startViewTransition || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      AppState.theme = newTheme;
+      this.apply(newTheme);
+      return;
+    }
+
+    let x = window.innerWidth / 2;
+    let y = 0;
+    if (event) {
+      const rect = event.currentTarget.getBoundingClientRect();
+      x = rect.left + rect.width / 2;
+      y = rect.top + rect.height / 2;
+    }
+
+    const endRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    );
+
+    // Disable CSS color transitions temporarily so they don't fight with the view transition snapshot
+    document.documentElement.classList.add('no-theme-transition');
+
+    const transition = document.startViewTransition(() => {
+      AppState.theme = newTheme;
+      this.apply(newTheme);
+    });
+
+    transition.ready.then(() => {
+      const clipPath = [
+        `circle(0px at ${x}px ${y}px)`,
+        `circle(${endRadius}px at ${x}px ${y}px)`
+      ];
+
+      const anim = document.documentElement.animate(
+        {
+          clipPath: clipPath
+        },
+        {
+          duration: 520,
+          easing: 'cubic-bezier(0.25, 1, 0.5, 1)',
+          pseudoElement: '::view-transition-new(root)'
+        }
+      );
+
+      anim.onfinish = () => {
+        document.documentElement.classList.remove('no-theme-transition');
+      };
+    });
+  },
+
   apply(theme) {
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
@@ -407,55 +463,272 @@ const CustomOrderManager = {
 
 // --- 7. Branches Interactive View & Map ---
 const BranchesManager = {
+  viewMode: 'art', // 'art' (illustrated map) or 'leaflet' (live street map)
+  isDarkMode: true,
+  userLocation: null,
+  userMarker: null,
+  distances: {},
+
   init() {
     this.renderBranchesList();
-    this.renderMap();
+    this.renderArtPins();
+    this.updateActiveBranchDisplay(branchesData[0]);
+  },
+
+  renderArtPins() {
+    const container = document.getElementById('art-map-pins');
+    if (!container) return;
+
+    container.innerHTML = branchesData.map(b => {
+      const isSelected = b.id === AppState.activeBranchId;
+      const coords = b.mapCoordsPercent || { x: 50, y: 50 };
+
+      return `
+        <div 
+          onclick="event.stopPropagation(); BranchesManager.selectBranch('${b.id}');"
+          class="absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 group/pin z-20"
+          style="left: ${coords.x}%; top: ${coords.y}%;"
+          title="${b.name}"
+        >
+          <div class="relative flex flex-col items-center justify-center">
+            
+            <!-- Floating Preview Card on Hover or Active -->
+            <div class="absolute bottom-full mb-3 p-1.5 rounded-2xl bg-[#141414]/95 backdrop-blur-md border border-[#D4AF37]/50 shadow-2xl pointer-events-none ${isSelected ? 'opacity-100 scale-100' : 'opacity-0 scale-90 group-hover/pin:opacity-100 group-hover/pin:scale-100'} transition-all duration-300 flex items-center gap-2 w-48 text-right z-30">
+              <img src="${b.image}" alt="${b.name}" class="w-10 h-10 rounded-xl object-cover border border-[#D4AF37]/40 shrink-0" onerror="this.src='./hero_oriental_pastry_atelier_1790628925750.jpg'" />
+              <div class="overflow-hidden">
+                <span class="text-[11px] font-black text-[#F3E5AB] block truncate font-serif-arabic">${b.name}</span>
+                <span class="text-[9px] text-[#fae084] font-bold block">⭐ ${b.rating} • ${b.area}</span>
+              </div>
+            </div>
+
+            <!-- Pulse Radar Glow -->
+            <div class="absolute w-12 h-12 rounded-full bg-[#D4AF37]/50 ${isSelected ? 'animate-ping' : 'opacity-0 group-hover/pin:opacity-100'} transition-opacity"></div>
+            
+            <!-- Golden Branch Pin with Photo Avatar inside -->
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#fae084] via-[#D4AF37] to-[#94671e] p-0.5 shadow-2xl flex items-center justify-center transition-all duration-300 ${isSelected ? 'scale-125 ring-4 ring-[#D4AF37]/70' : 'group-hover/pin:scale-115'}">
+              <div class="w-full h-full bg-[#111111] rounded-[14px] overflow-hidden flex items-center justify-center relative">
+                <img src="${b.image}" alt="${b.name}" class="w-full h-full object-cover opacity-80" onerror="this.src='./hero_oriental_pastry_atelier_1790628925750.jpg'" />
+                <div class="absolute inset-0 bg-black/30 flex items-center justify-center">
+                  <i class="fas fa-crown text-[10px] text-[#fae084] drop-shadow-md"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pin Bottom Indicator Tip -->
+            <div class="w-1.5 h-1.5 rounded-full bg-[#fae084] mt-1 shadow-md"></div>
+
+          </div>
+        </div>
+      `;
+    }).join('');
+  },
+
+  toggleViewMode() {
+    const artView = document.getElementById('illustrated-art-view');
+    const leafView = document.getElementById('leaflet-map-view');
+    const textEl = document.getElementById('view-mode-text');
+
+    if (this.viewMode === 'art') {
+      this.viewMode = 'leaflet';
+      if (artView) artView.classList.add('hidden');
+      if (leafView) leafView.classList.remove('hidden');
+      if (textEl) textEl.textContent = 'الخريطة التراثية الفنية';
+      
+      // Render or resize leaflet map
+      if (!window.alaseelMap) {
+        this.renderMap();
+      } else {
+        setTimeout(() => window.alaseelMap.invalidateSize(), 200);
+      }
+    } else {
+      this.viewMode = 'art';
+      if (artView) artView.classList.remove('hidden');
+      if (leafView) leafView.classList.add('hidden');
+      if (textEl) textEl.textContent = 'خريطة الشوارع التفاعلية';
+      this.renderArtPins();
+    }
+  },
+
+  openActiveBranchInGoogleMaps() {
+    const branch = branchesData.find(b => b.id === AppState.activeBranchId) || branchesData[0];
+    if (branch && branch.directionsUrl) {
+      window.open(branch.directionsUrl, '_blank');
+    }
+  },
+
+  updateActiveBranchDisplay(branch) {
+    const nameEl = document.getElementById('art-active-branch-name');
+    const linkEl = document.getElementById('art-map-direct-link');
+    if (nameEl) nameEl.textContent = branch.name;
+    if (linkEl) linkEl.href = branch.directionsUrl;
+  },
+
+  getDistanceKm(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * (Math.PI / 180);
+    const dLon = (lon2 - lon1) * (Math.PI / 180);
+    const a = 
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) * 
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return Math.round(R * c * 10) / 10;
+  },
+
+  locateNearestBranch() {
+    const btn = document.getElementById('locate-nearest-btn');
+    if (!navigator.geolocation) {
+      alert('خدمة تحديد الموقع الجغرافي غير مدعومة في متصفحك.');
+      return;
+    }
+
+    if (btn) {
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin ml-1.5 text-black"></i> جاري تحديد موقعك في سوهاج...';
+      btn.disabled = true;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const userLat = pos.coords.latitude;
+        const userLng = pos.coords.longitude;
+        this.userLocation = { lat: userLat, lng: userLng };
+
+        let nearestBranch = null;
+        let minDistance = Infinity;
+
+        branchesData.forEach(b => {
+          const dist = this.getDistanceKm(userLat, userLng, b.lat, b.lng);
+          this.distances[b.id] = dist;
+          if (dist < minDistance) {
+            minDistance = dist;
+            nearestBranch = b;
+          }
+        });
+
+        if (btn && nearestBranch) {
+          btn.innerHTML = `<i class="fas fa-check-circle ml-1.5 text-black"></i> أقرب فرع: ${nearestBranch.name} (${minDistance} كم)`;
+          setTimeout(() => {
+            btn.innerHTML = '<i class="fas fa-location-crosshairs text-black"></i> <span>تحديد أقرب فرع لموقعي 📍</span>';
+            btn.disabled = false;
+          }, 6000);
+        }
+
+        this.renderBranchesList();
+
+        if (nearestBranch) {
+          this.selectBranch(nearestBranch.id);
+        }
+      },
+      (err) => {
+        if (btn) {
+          btn.innerHTML = '<i class="fas fa-exclamation-triangle ml-1.5 text-amber-900"></i> يرجى تفعيل إذن الموقع';
+          btn.disabled = false;
+          setTimeout(() => {
+            btn.innerHTML = '<i class="fas fa-location-crosshairs text-black"></i> <span>تحديد أقرب فرع لموقعي 📍</span>';
+          }, 3500);
+        }
+        console.warn('Geolocation error:', err);
+      },
+      { timeout: 10000, enableHighAccuracy: true }
+    );
   },
 
   renderBranchesList() {
     const container = document.getElementById('branches-list');
     if (!container) return;
 
-    container.innerHTML = branchesData.map(b => `
-      <div 
-        onclick="BranchesManager.selectBranch('${b.id}')" 
-        id="branch-card-${b.id}"
-        class="cursor-pointer p-4 rounded-2xl bg-[#141414] border ${b.id === AppState.activeBranchId ? 'border-[#D4AF37] bg-[#1a1810]' : 'border-[#D4AF37]/20 hover:border-[#D4AF37]/50'} transition-all text-right group"
-      >
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-xs px-2.5 py-0.5 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] font-bold border border-[#D4AF37]/30">
-            ${b.area}
-          </span>
-          <span class="text-xs text-amber-400 font-bold">
-            <i class="fas fa-star text-xs ml-1"></i>${b.rating}
-          </span>
+    container.innerHTML = branchesData.map(b => {
+      const isSelected = b.id === AppState.activeBranchId;
+      const distance = this.distances[b.id];
+
+      return `
+        <div 
+          onclick="BranchesManager.selectBranch('${b.id}')" 
+          id="branch-card-${b.id}"
+          class="cursor-pointer p-3 sm:p-3.5 rounded-2xl bg-[#141414] border ${isSelected ? 'border-[#D4AF37] bg-[#1a1810] shadow-[0_0_25px_rgba(212,175,55,0.25)]' : 'border-[#D4AF37]/20 hover:border-[#D4AF37]/50'} transition-all text-right group flex gap-3.5 items-center"
+        >
+          <!-- Branch Visual Illustration / Photo Thumbnail -->
+          <div class="w-20 h-20 sm:w-22 sm:h-22 rounded-xl overflow-hidden shrink-0 border border-[#D4AF37]/35 bg-black relative shadow-md">
+            <img 
+              src="${b.image}" 
+              alt="${b.name}" 
+              loading="lazy"
+              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
+              onerror="this.src='./hero_oriental_pastry_atelier_1790628925750.jpg'"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+            <span class="absolute bottom-1 right-1 px-1.5 py-0.5 rounded-md bg-black/80 backdrop-blur-xs text-[9px] text-[#fae084] font-bold border border-[#D4AF37]/30">
+              ⭐ ${b.rating}
+            </span>
+          </div>
+
+          <!-- Branch Details -->
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between mb-1 gap-1">
+              <span class="text-[10px] sm:text-[11px] px-2 py-0.5 rounded-full bg-[#D4AF37]/15 text-[#D4AF37] font-bold border border-[#D4AF37]/30 truncate">
+                ${b.area}
+              </span>
+              <span class="text-[9px] px-1.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-bold border border-emerald-500/30 flex items-center gap-1 shrink-0">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                مفتوح
+              </span>
+            </div>
+
+            <h4 class="text-xs sm:text-sm font-black text-[#F3E5AB] group-hover:text-[#D4AF37] transition-colors mb-1 font-serif-arabic truncate">
+              ${b.name}
+            </h4>
+
+            <p class="text-[10px] sm:text-[11px] text-[#F3E5AB]/70 mb-2 font-light leading-relaxed line-clamp-1">
+              ${b.address}
+            </p>
+
+            ${distance !== undefined ? `
+              <div class="mb-2 py-0.5 px-2 rounded-lg bg-[#D4AF37]/15 border border-[#D4AF37]/30 text-[10px] text-[#fae084] font-bold flex items-center justify-between">
+                <div class="flex items-center gap-1">
+                  <i class="fas fa-location-arrow text-[#D4AF37]"></i>
+                  <span>يبعد عن موقعك:</span>
+                </div>
+                <span class="font-mono text-white text-[11px]">${distance} كم</span>
+              </div>
+            ` : ''}
+
+            <div class="flex items-center justify-between text-[11px] text-[#D4AF37] pt-1.5 border-t border-[#D4AF37]/15">
+              <span class="text-[9px] sm:text-[10px] text-neutral-300 font-light truncate max-w-[130px]"><i class="far fa-clock ml-1 text-[#D4AF37]"></i>${b.hours}</span>
+              <div class="flex items-center gap-1.5 shrink-0">
+                <a href="tel:${b.phone}" onclick="event.stopPropagation()" class="p-1 px-2 rounded-lg bg-black/50 hover:bg-[#D4AF37] hover:text-black border border-[#D4AF37]/25 transition-all flex items-center gap-1 text-[10px]" title="اتصال">
+                  <i class="fas fa-phone-alt text-[9px]"></i>
+                  <span class="font-bold">اتصال</span>
+                </a>
+                <a href="${b.directionsUrl}" target="_blank" onclick="event.stopPropagation()" class="p-1 px-2 rounded-lg bg-[#D4AF37] hover:bg-[#C5A059] text-black font-black text-[10px] transition-all flex items-center gap-1 shadow-sm">
+                  <span>الاتجاهات</span>
+                  <i class="fas fa-location-arrow text-[8px]"></i>
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
-        <h4 class="text-sm font-black text-[#F3E5AB] group-hover:text-[#D4AF37] transition-colors mb-1 font-serif-arabic">
-          ${b.name}
-        </h4>
-        <p class="text-xs text-[#F3E5AB]/70 mb-2 font-light leading-relaxed">
-          ${b.address}
-        </p>
-        <div class="flex items-center justify-between text-[11px] text-[#D4AF37] pt-2 border-t border-[#D4AF37]/15">
-          <span><i class="far fa-clock ml-1"></i>${b.hours}</span>
-          <a href="${b.directionsUrl}" target="_blank" class="hover:underline flex items-center gap-1 font-bold">
-            <span>الاتجاهات</span>
-            <i class="fas fa-location-arrow text-[10px]"></i>
-          </a>
-        </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
   },
 
   selectBranch(id) {
     AppState.activeBranchId = id;
     this.renderBranchesList();
     const branch = branchesData.find(b => b.id === id);
-    if (branch && window.alaseelMap) {
-      window.alaseelMap.setView([branch.lat, branch.lng], 16);
-      if (window.branchMarkers && window.branchMarkers[id]) {
-        window.branchMarkers[id].openPopup();
-      }
+    if (!branch) return;
+
+    this.updateActiveBranchDisplay(branch);
+
+    if (this.viewMode === 'art') {
+      this.renderArtPins();
+    } else if (window.alaseelMap) {
+      const targetLat = branch.lat + 0.0035;
+      window.alaseelMap.flyTo([targetLat, branch.lng], 15.5, { duration: 1.1 });
+      setTimeout(() => {
+        if (window.branchMarkers && window.branchMarkers[id]) {
+          window.branchMarkers[id].openPopup();
+        }
+      }, 400);
     }
   },
 
@@ -463,29 +736,83 @@ const BranchesManager = {
     const mapEl = document.getElementById('leaflet-map');
     if (!mapEl || typeof L === 'undefined') return;
 
+    if (window.alaseelMap) {
+      window.alaseelMap.remove();
+    }
+
+    mapEl.classList.add('dark-map-tiles');
+
     const map = L.map('leaflet-map', {
-      center: [26.5615, 31.6990],
-      zoom: 14,
+      center: [26.5650, 31.6990],
+      zoom: 13.5,
       scrollWheelZoom: false
     });
     window.alaseelMap = map;
     window.branchMarkers = {};
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
+      attribution: '© OpenStreetMap contributors',
+      maxZoom: 19
     }).addTo(map);
 
+    const createGoldIcon = (branch) => {
+      return L.divIcon({
+        className: 'custom-gold-marker-container',
+        html: `
+          <div class="custom-gold-marker" title="${branch.name}">
+            <div class="marker-pulse"></div>
+            <div class="marker-pin">
+              <i class="fas fa-crown"></i>
+            </div>
+          </div>
+        `,
+        iconSize: [40, 40],
+        iconAnchor: [20, 36],
+        popupAnchor: [0, -28]
+      });
+    };
+
     branchesData.forEach(branch => {
-      const marker = L.marker([branch.lat, branch.lng]).addTo(map);
-      marker.bindPopup(`
-        <div style="direction: rtl; text-align: right; font-family: 'Cairo', sans-serif;">
-          <h4 style="font-weight: 900; color: #b3822a; margin: 0 0 4px 0;">${branch.name}</h4>
-          <p style="font-size: 11px; margin: 0 0 6px 0;">${branch.address}</p>
-          <a href="${branch.directionsUrl}" target="_blank" style="font-size: 11px; color: #b3822a; font-weight: bold; text-decoration: none;">
-            📍 فتح في خرائط جوجل
-          </a>
+      const marker = L.marker([branch.lat, branch.lng], { icon: createGoldIcon(branch) }).addTo(map);
+      
+      const popupHtml = `
+        <div style="direction: rtl; text-align: right; font-family: 'Cairo', sans-serif; width: 240px; padding: 12px; background: #141414; border-radius: 16px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+            <span style="font-size: 10px; font-weight: bold; color: #D4AF37; background: rgba(212,175,55,0.15); border: 1px solid rgba(212,175,55,0.3); padding: 1px 7px; border-radius: 9999px;">
+              ${branch.area}
+            </span>
+            <span style="font-size: 10px; color: #34d399; font-weight: bold;">
+              🟢 مفتوح الآن
+            </span>
+          </div>
+          <h4 style="font-weight: 900; color: #fae084; margin: 0 0 4px 0; font-size: 13px; line-height: 1.3;">${branch.name}</h4>
+          <p style="font-size: 11px; color: #c9bea9; margin: 0 0 6px 0; line-height: 1.4;">${branch.address}</p>
+          <div style="font-size: 10px; color: #D4AF37; margin-bottom: 10px;">
+            <i class="far fa-clock"></i> ${branch.hours}
+          </div>
+          <div style="display: flex; gap: 6px;">
+            <a href="tel:${branch.phone}" style="flex: 1; padding: 6px 0; border-radius: 10px; background: #222; color: #D4AF37; font-size: 11px; font-weight: bold; text-decoration: none; text-align: center; border: 1px solid rgba(212,175,55,0.3);">
+              📞 اتصال
+            </a>
+            <a href="${branch.directionsUrl}" target="_blank" style="flex: 1.3; padding: 6px 0; border-radius: 10px; background: #D4AF37; color: #000; font-size: 11px; font-weight: 900; text-decoration: none; text-align: center;">
+              📍 الاتجاهات
+            </a>
+          </div>
         </div>
-      `);
+      `;
+
+      marker.bindPopup(popupHtml, { 
+        maxWidth: 280, 
+        closeButton: false,
+        autoPan: true,
+        autoPanPadding: [25, 25]
+      });
+
+      marker.on('click', () => {
+        AppState.activeBranchId = branch.id;
+        BranchesManager.renderBranchesList();
+      });
+
       window.branchMarkers[branch.id] = marker;
     });
   }

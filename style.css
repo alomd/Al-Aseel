@@ -254,18 +254,245 @@ input, textarea, select {
   height: 100%;
 }
 
-/* Floating Developer Trigger Pulse */
+/* Floating Developer Trigger Pulse & Royal Ring Effect */
 @keyframes devBadgePulse {
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.5);
+    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.6), 0 8px 25px rgba(212, 175, 55, 0.4);
   }
   50% {
-    transform: scale(1.05);
-    box-shadow: 0 0 0 8px rgba(212, 175, 55, 0);
+    transform: scale(1.06);
+    box-shadow: 0 0 0 10px rgba(212, 175, 55, 0), 0 12px 35px rgba(212, 175, 55, 0.6);
   }
 }
 
+@keyframes royalOrbit {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes royalBadgeShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
 .dev-trigger-pulse {
-  animation: devBadgePulse 3s infinite ease-in-out;
+  animation: devBadgePulse 3.5s infinite ease-in-out;
+}
+
+.dev-rotating-ring {
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  background: conic-gradient(from 0deg, #D4AF37, #fae084, #94671e, #D4AF37);
+  animation: royalOrbit 6s linear infinite;
+  opacity: 0.85;
+  transition: opacity 0.3s ease, inset 0.3s ease;
+  z-index: 0;
+}
+
+#dev-floating-btn:hover .dev-rotating-ring {
+  inset: -6px;
+  opacity: 1;
+  filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.8));
+}
+
+/* Theme Toggle Button Deluxe Transition */
+.theme-toggle-btn {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+.theme-toggle-btn:active {
+  transform: scale(0.85) rotate(15deg);
+}
+
+.theme-toggle-btn i {
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+}
+
+.theme-toggle-btn:hover i {
+  transform: rotate(25deg) scale(1.15);
+}
+
+.theme-toggle-clicked {
+  animation: themePulse 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes themePulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.22) rotate(-15deg); box-shadow: 0 0 20px rgba(212, 175, 55, 0.7); }
+  100% { transform: scale(1); }
+}
+
+/* ======================================================== */
+/* Seamless Circular Reveal Theme Transition (Zero Flicker)  */
+/* ======================================================== */
+.no-theme-transition,
+.no-theme-transition *,
+.no-theme-transition *::before,
+.no-theme-transition *::after {
+  transition: none !important;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 9999;
+}
+
+
+
+/* ======================================================== */
+/* Luxury Golden Map Markers & Dark Leaflet Styles           */
+/* ======================================================== */
+.custom-gold-marker-container {
+  background: transparent !important;
+  border: none !important;
+}
+
+.custom-gold-marker {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.marker-pin {
+  width: 36px;
+  height: 36px;
+  border-radius: 50% 50% 50% 0;
+  background: linear-gradient(135deg, #fae084 0%, #D4AF37 55%, #94671e 100%);
+  position: absolute;
+  transform: rotate(-45deg);
+  left: 50%;
+  top: 50%;
+  margin: -18px 0 0 -18px;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.6), 0 2px 6px rgba(0,0,0,0.5);
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+.marker-pin i {
+  transform: rotate(45deg);
+  color: #1a1610;
+  font-size: 13px;
+  text-shadow: 0 1px 1px rgba(255,255,255,0.4);
+}
+
+.custom-gold-marker:hover .marker-pin {
+  transform: rotate(-45deg) scale(1.22);
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.95), 0 6px 20px rgba(0,0,0,0.6);
+  border-color: #fae084;
+}
+
+.marker-pulse {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(212, 175, 55, 0.45);
+  bottom: -4px;
+  left: 9px;
+  animation: goldMarkerPulse 2.2s infinite ease-out;
+  pointer-events: none;
+}
+
+@keyframes goldMarkerPulse {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+
+/* User Live Location Marker */
+.user-pin-wrapper {
+  background: transparent !important;
+  border: none !important;
+}
+
+.user-location-pin {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-core {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px rgba(59, 130, 246, 0.6);
+  z-index: 2;
+}
+
+.user-beacon {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(59, 130, 246, 0.4);
+  animation: userBeaconAnim 1.8s infinite ease-out;
+  z-index: 1;
+}
+
+@keyframes userBeaconAnim {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* Leaflet Popup Dark Luxury Polish */
+.leaflet-popup-content-wrapper {
+  background: #141414 !important;
+  color: #F3E5AB !important;
+  border: 1px solid rgba(212, 175, 55, 0.5) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7), 0 0 20px rgba(212, 175, 55, 0.25) !important;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+}
+
+.leaflet-popup-tip {
+  background: #141414 !important;
+  border: 1px solid rgba(212, 175, 55, 0.4) !important;
+}
+
+.leaflet-container {
+  font-family: 'Cairo', sans-serif !important;
+  background: #0d0d0d !important;
+}
+
+/* ======================================================== */
+/* Pure Dark Luxury Map Tile Filter (No API Key & No Watermark) */
+/* ======================================================== */
+.dark-map-tiles .leaflet-tile-pane {
+  filter: brightness(0.6) invert(1) contrast(2.2) hue-rotate(200deg) saturate(0.2) brightness(0.85);
+}
+
+html:not(.dark) .dark-map-tiles .leaflet-tile-pane {
+  filter: none;
 }
